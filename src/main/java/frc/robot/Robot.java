@@ -22,6 +22,7 @@ import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 public class Robot extends TimedRobot {
   private static final int kMotorPort = 5;
   private static final int kJoystickPort = 0;
+  private static final double deadZone = 0.1;
 
   private CANSparkMax m_motor;
   private Joystick m_joystick;
@@ -35,7 +36,9 @@ public class Robot extends TimedRobot {
 
   @Override
   public void teleopPeriodic() {
-    // m_motor.set(m_joystick.getY());
+    if (m_joystick.getY() != deadZone || m_joystick.getX() != deadZone) {
+      m_motor.set(m_joystick.getY());
+    }
     System.out.println(m_joystick.getY());
   }
 }
