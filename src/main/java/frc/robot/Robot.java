@@ -4,41 +4,53 @@
 
 package frc.robot;
 
-import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.wpilibj.TimedRobot;
-// import edu.wpi.first.wpilibj.motorcontrol.MotorController;
-import com.revrobotics.CANSparkMax;
-import com.revrobotics.CANSparkMax.IdleMode;
-import com.revrobotics.CANSparkMaxLowLevel.MotorType;
+import edu.wpi.first.wpilibj.XboxController;
 
-
-/**
- * This sample program shows how to control a motor using a joystick. In the operator control part
- * of the program, the joystick is read and the value is written to the motor.
- *
- * <p>Joystick analog values range from -1 to 1 and speed controller inputs also range from -1 to 1
- * making it easy to work together.
- */
 public class Robot extends TimedRobot {
-  private static final int kMotorPort = 5;
-  private static final int kJoystickPort = 0;
-  private static final double deadZone = 0.1;
+  private final XboxController m_controller = new XboxController(0);
+  private final Drivetrain m_swerve = new Drivetrain();
 
-  private CANSparkMax m_motor;
-  private Joystick m_joystick;
+  // Slew rate limiters to make joystick inputs more gentle; 1/3 sec from 0 to 1.
+  private final SlewRateLimiter m_xspeedLimiter = new SlewRateLimiter(3);
+  private final SlewRateLimiter m_yspeedLimiter = new SlewRateLimiter(3);
+  private final SlewRateLimiter m_rotLimiter = new SlewRateLimiter(3);
 
   @Override
-  public void robotInit() {
-    m_motor = new CANSparkMax(kMotorPort, MotorType.kBrushless);
-    // m_motor.restoreFactoryDefaults();
-    m_joystick = new Joystick(kJoystickPort);
+  public void autonomousPeriodic() {
+    driveWithJoystick(false);
+    m_swerve.updateOdometry();
   }
 
   @Override
   public void teleopPeriodic() {
-    if (m_joystick.getY() != deadZone || m_joystick.getX() != deadZone) {
-      m_motor.set(m_joystick.getY());
-    }
-    System.out.println(m_joystick.getY());
+    driveWithJoystick(true);
+  }
+
+  private void driveWithJoystick(boolean fieldRelative) {
+    // Get the x speed. We are inverting this because Xbox controllers return
+    // negative values when we push forward.
+    final var xSpeed =
+        -m_xspeedLimiter.calculate(MathUtil.applyDeadband(m_controller.getLeftY(), 0.02))
+            * Drivetrain.kMaxSpeed;
+
+    // Get the y speed or sideways/strafe speed. We are inverting this because
+    // we want a positive value when we pull to the left. Xbox controllers
+    // return positive values when you pull to the right by default.
+    final var ySpeed =
+        -m_yspeedLimiter.calculate(MathUtil.applyDeadband(m_controller.getLeftX(), 0.02))
+            * Drivetrain.kMaxSpeed;
+
+    // Get the rate of angular rotation. We are inverting this because we want a
+    // positive value when we pull to the left (remember, CCW is positive in
+    // mathematics). Xbox controllers return positive values when you pull to
+    // the right by default.
+    final var rot =
+        -m_rotLimiter.calculate(MathUtil.applyDeadband(m_controller.getRightX(), 0.02))
+            * Drivetrain.kMaxAngularSpeed;
+
+    m_swerve.drive(xSpeed, ySpeed, rot, fieldRelative);
   }
 }
