@@ -5,11 +5,13 @@
 package frc.robot;
 
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
-import edu.wpi.first.wpilibj.AnalogGyro;
+// import edu.wpi.first.wpilibj.AnalogGyro;
+import com.ctre.phoenix.sensors.PigeonIMU;
 
 /** Represents a swerve drive style drivetrain. */
 public class Drivetrain {
@@ -22,12 +24,12 @@ public class Drivetrain {
   private final Translation2d m_backRightLocation = new Translation2d(-0.381, -0.381);
 
     //CHANGE ENCODER PORTS
-  private final SwerveModule m_frontLeft = new SwerveModule(1, 2, 0, 1, 2, 3);
-  private final SwerveModule m_frontRight = new SwerveModule(3, 4, 4, 5, 6, 7);
-  // private final SwerveModule m_backLeft = new SwerveModule(5, 6, 8, 9, 10, 11);
-  // private final SwerveModule m_backRight = new SwerveModule(7, 8, 12, 13, 14, 15);
+  private final SwerveModule m_frontLeft = new SwerveModule(1, 10, 20);
+  private final SwerveModule m_frontRight = new SwerveModule(8, 2, 21);
+  private final SwerveModule m_backLeft = new SwerveModule(7, 6, 22);
+  private final SwerveModule m_backRight = new SwerveModule(3, 9, 23);
 
-  private final AnalogGyro m_gyro = new AnalogGyro(0); //CHANGE
+  private final PigeonIMU m_gyro = new PigeonIMU(30);
 
   private final SwerveDriveKinematics m_kinematics =
       new SwerveDriveKinematics(
@@ -45,7 +47,7 @@ public class Drivetrain {
   //         });
 
   public Drivetrain() {
-    m_gyro.reset();
+    m_gyro.setYaw(0);
   }
 
   /**
@@ -60,13 +62,13 @@ public class Drivetrain {
     var swerveModuleStates =
         m_kinematics.toSwerveModuleStates(
             fieldRelative
-                ? ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, rot, m_gyro.getRotation2d())
+                ? ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, rot, new Rotation2d(m_gyro.getYaw()))
                 : new ChassisSpeeds(xSpeed, ySpeed, rot));
     SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleStates, kMaxSpeed);
     m_frontLeft.setDesiredState(swerveModuleStates[0]);
     m_frontRight.setDesiredState(swerveModuleStates[1]);
-    // m_backLeft.setDesiredState(swerveModuleStates[2]);
-    // m_backRight.setDesiredState(swerveModuleStates[3]);
+    m_backLeft.setDesiredState(swerveModuleStates[2]);
+    m_backRight.setDesiredState(swerveModuleStates[3]);
   }
 
   /** Updates the field relative position of the robot. */
