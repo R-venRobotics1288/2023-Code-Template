@@ -12,7 +12,7 @@ import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import main.java.frc.robot.Constants.DriveConstants;
+import frc.robot.Constants.DriveConstants;
 
 // import edu.wpi.first.wpilibj.AnalogGyro;
 import com.ctre.phoenix.sensors.PigeonIMU;
@@ -60,7 +60,7 @@ public class Drivetrain {
     SmartDashboard.putNumber("Front Right Encoder", m_frontRight.getTurningEncoder().getPosition());
     SmartDashboard.putNumber("Back Left Encoder", m_backLeft.getTurningEncoder().getPosition());
     SmartDashboard.putNumber("Back Right Encoder", m_backRight.getTurningEncoder().getPosition());
-    SmartDashboard.putNumber("Desiered state", );    
+    // SmartDashboard.putNumber("Desiered state", );    
   }
 
 
