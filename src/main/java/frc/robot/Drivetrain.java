@@ -10,6 +10,10 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
+import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import main.java.frc.robot.Constants.DriveConstants;
+
 // import edu.wpi.first.wpilibj.AnalogGyro;
 import com.ctre.phoenix.sensors.PigeonIMU;
 
@@ -18,16 +22,16 @@ public class Drivetrain {
   public static final double kMaxSpeed = 3.0; // 3 meters per second
   public static final double kMaxAngularSpeed = Math.PI; // 1/2 rotation per second
 
-  private final Translation2d m_frontLeftLocation = new Translation2d(0.381, 0.381);
-  private final Translation2d m_frontRightLocation = new Translation2d(0.381, -0.381);
-  private final Translation2d m_backLeftLocation = new Translation2d(-0.381, 0.381);
-  private final Translation2d m_backRightLocation = new Translation2d(-0.381, -0.381);
+  private final Translation2d m_frontLeftLocation = new Translation2d(DriveConstants.robotLength / 2, DriveConstants.robotWidth / 2);
+  private final Translation2d m_frontRightLocation = new Translation2d(DriveConstants.robotLength / 2, -DriveConstants.robotWidth / 2);
+  private final Translation2d m_backLeftLocation = new Translation2d(-DriveConstants.robotLength / 2, DriveConstants.robotWidth / 2);
+  private final Translation2d m_backRightLocation = new Translation2d(-DriveConstants.robotLength / 2, -DriveConstants.robotWidth / 2);
 
     //CHANGE ENCODER PORTS
-  private final SwerveModule m_frontLeft = new SwerveModule(1, 10, 20);
-  private final SwerveModule m_frontRight = new SwerveModule(8, 2, 21);
-  private final SwerveModule m_backLeft = new SwerveModule(7, 6, 22);
-  private final SwerveModule m_backRight = new SwerveModule(3, 9, 23);
+  private final SwerveModule m_frontLeft = new SwerveModule(1, 10, 20, DriveConstants.offsets[0]);
+  private final SwerveModule m_frontRight = new SwerveModule(8, 2, 21, DriveConstants.offsets[1]);
+  private final SwerveModule m_backLeft = new SwerveModule(7, 6, 22, DriveConstants.offsets[2]);
+  private final SwerveModule m_backRight = new SwerveModule(3, 9, 23, DriveConstants.offsets[3]);
 
   private final PigeonIMU m_gyro = new PigeonIMU(30);
 
@@ -50,6 +54,16 @@ public class Drivetrain {
     m_gyro.setYaw(0);
   }
 
+  
+  public void teleopPeriodic() {
+    SmartDashboard.putNumber("Front Left Encoder", m_frontLeft.getTurningEncoder().getPosition());
+    SmartDashboard.putNumber("Front Right Encoder", m_frontRight.getTurningEncoder().getPosition());
+    SmartDashboard.putNumber("Back Left Encoder", m_backLeft.getTurningEncoder().getPosition());
+    SmartDashboard.putNumber("Back Right Encoder", m_backRight.getTurningEncoder().getPosition());
+    SmartDashboard.putNumber("Desiered state", );    
+  }
+
+
   /**
    * Method to drive the robot using joystick info.
    *
@@ -59,7 +73,7 @@ public class Drivetrain {
    * @param fieldRelative Whether the provided x and y speeds are relative to the field.
    */
   public void drive(double xSpeed, double ySpeed, double rot, boolean fieldRelative) {
-    var swerveModuleStates =
+    final SwerveModuleState[] swerveModuleStates =
         m_kinematics.toSwerveModuleStates(
             fieldRelative
                 ? ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, rot, new Rotation2d(m_gyro.getYaw()))
