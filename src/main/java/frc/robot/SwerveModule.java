@@ -34,6 +34,18 @@ public class SwerveModule {
   private final RelativeEncoder m_driveEncoder;
   private final CANCoder m_turningEncoder;
 
+  private final SwerveModuleState m_state;
+
+  private final double m_offset;
+
+  public RelativeEncoder getTranslationEncoder() {
+    return m_driveEncoder;
+  }
+
+  public CANCoder getTurningEncoder() {
+    return m_turningEncoder;
+  }
+
 
   // Gains are for example purposes only - must be determined for your own robot!
   private final PIDController m_drivePIDController = new PIDController(1, 0, 0);
@@ -41,7 +53,7 @@ public class SwerveModule {
   // Gains are for example purposes only - must be determined for your own robot!
   private final ProfiledPIDController m_turningPIDController =
       new ProfiledPIDController(
-          1,
+          0.1,
           0,
           0,
           new TrapezoidProfile.Constraints(
@@ -63,12 +75,17 @@ public class SwerveModule {
   public SwerveModule(
       int driveMotorChannel,
       int turningMotorChannel,
-      int turningEncoderChannel) {
+      int turningEncoderChannel,
+      double offset) {
     m_driveMotor = new CANSparkMax(driveMotorChannel, MotorType.kBrushless);
     m_turningMotor = new CANSparkMax(turningMotorChannel, MotorType.kBrushless);
+    m_offset = offset;
 
     m_driveEncoder = m_driveMotor.getEncoder();
     m_turningEncoder = new CANCoder(turningEncoderChannel);
+
+    m_state = new SwerveModuleState(
+      m_turningEncoder.getVelocity(), new Rotation2d(m_turningEncoder.getPosition() + m_offset));
 
     // Set the distance per pulse for the drive encoder. We can simply use the
     // distance traveled for one rotation of the wheel divided by the encoder
@@ -117,8 +134,8 @@ public class SwerveModule {
    */
   public void setDesiredState(SwerveModuleState desiredState) {
     // Optimize the reference state to avoid spinning further than 90 degrees
-    SwerveModuleState state =
-        SwerveModuleState.optimize(desiredState, new Rotation2d(m_turningEncoder.getPosition()));
+    final SwerveModuleState state =
+        m_state.optimize(desiredState, new Rotation2d(m_turningEncoder.getPosition()));
 
     // Calculate the drive output from the drive PID controller.
     final double driveOutput =
