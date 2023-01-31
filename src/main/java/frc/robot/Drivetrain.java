@@ -28,10 +28,10 @@ public class Drivetrain {
   private final Translation2d m_backRightLocation = new Translation2d(-DriveConstants.robotLength / 2, -DriveConstants.robotWidth / 2);
 
     //CHANGE ENCODER PORTS
-  private final SwerveModule m_frontLeft = new SwerveModule(1, 10, 20, DriveConstants.offsets[0]);
-  private final SwerveModule m_frontRight = new SwerveModule(8, 2, 21, DriveConstants.offsets[1]);
-  private final SwerveModule m_backLeft = new SwerveModule(7, 6, 22, DriveConstants.offsets[2]);
-  private final SwerveModule m_backRight = new SwerveModule(3, 9, 23, DriveConstants.offsets[3]);
+  private final SwerveModule m_frontLeft = new SwerveModule(1, 10, 20);
+  private final SwerveModule m_frontRight = new SwerveModule(8, 2, 21);
+  private final SwerveModule m_backLeft = new SwerveModule(7, 6, 22);
+  private final SwerveModule m_backRight = new SwerveModule(3, 9, 23);
 
   private final PigeonIMU m_gyro = new PigeonIMU(30);
 
@@ -60,7 +60,7 @@ public class Drivetrain {
     SmartDashboard.putNumber("Front Right Encoder", m_frontRight.getTurningEncoder().getPosition());
     SmartDashboard.putNumber("Back Left Encoder", m_backLeft.getTurningEncoder().getPosition());
     SmartDashboard.putNumber("Back Right Encoder", m_backRight.getTurningEncoder().getPosition());
-    // SmartDashboard.putNumber("Desiered state", );    
+    SmartDashboard.putNumber("Front Left Desired Angle", m_frontRight.targetAngle);
   }
 
 
