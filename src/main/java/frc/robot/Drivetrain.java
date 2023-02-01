@@ -50,16 +50,20 @@ public class Drivetrain {
   //           m_backRight.getPosition()
   //         });
 
+  public void resetWheelAngles() {
+    m_frontLeft.setDesiredState(new SwerveModuleState(0, new Rotation2d(DriveConstants.startingPositions[0])));
+  }
+
   public Drivetrain() {
     m_gyro.setYaw(0);
   }
 
   
   public void teleopPeriodic() {
-    SmartDashboard.putNumber("Front Left Encoder", m_frontLeft.getTurningEncoder().getPosition());
-    SmartDashboard.putNumber("Front Right Encoder", m_frontRight.getTurningEncoder().getPosition());
-    SmartDashboard.putNumber("Back Left Encoder", m_backLeft.getTurningEncoder().getPosition());
-    SmartDashboard.putNumber("Back Right Encoder", m_backRight.getTurningEncoder().getPosition());
+    SmartDashboard.putNumber("Front Left Encoder", m_frontLeft.getTurningEncoder().getPosition()*DriveConstants.radiansPerEncoderTick);
+    SmartDashboard.putNumber("Front Right Encoder", m_frontRight.getTurningEncoder().getPosition()*DriveConstants.radiansPerEncoderTick);
+    SmartDashboard.putNumber("Back Left Encoder", m_backLeft.getTurningEncoder().getPosition()*DriveConstants.radiansPerEncoderTick);
+    SmartDashboard.putNumber("Back Right Encoder", m_backRight.getTurningEncoder().getPosition()*DriveConstants.radiansPerEncoderTick);
     SmartDashboard.putNumber("Front Left Desired Angle", m_frontRight.targetAngle);
     SmartDashboard.putNumber("Error for front right angle", m_frontRight.error);
 
