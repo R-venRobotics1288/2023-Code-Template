@@ -49,7 +49,7 @@ public class SwerveModule {
   // Gains are for example purposes only - must be determined for your own robot!
   private final ProfiledPIDController m_turningPIDController =
       new ProfiledPIDController(
-          0.0001,
+          0.01,
           0,
           0,
           new TrapezoidProfile.Constraints(
@@ -61,6 +61,7 @@ public class SwerveModule {
 
   // Testing variables for shuffleboard
   public double targetAngle;
+  public double error;
 
   /**
    * Constructs a SwerveModule with a drive motor, turning motor, drive encoder and turning encoder.
@@ -77,6 +78,8 @@ public class SwerveModule {
       int turningEncoderChannel) {
     m_driveMotor = new CANSparkMax(driveMotorChannel, MotorType.kBrushless);
     m_turningMotor = new CANSparkMax(turningMotorChannel, MotorType.kBrushless);
+    m_turningMotor.setInverted(true);
+    m_turningMotor.burnFlash();
     
 
     m_driveEncoder = m_driveMotor.getEncoder();
@@ -145,12 +148,19 @@ public class SwerveModule {
         m_turningPIDController.calculate(m_turningEncoder.getPosition(), state.angle.getRadians());
 
     targetAngle = state.angle.getRadians();
+    error = targetAngle - m_turningEncoder.getPosition();
+
 
 
     final double turnFeedforward =
         m_turnFeedforward.calculate(m_turningPIDController.getSetpoint().velocity);
 
-    m_driveMotor.setVoltage(driveOutput + driveFeedforward);
-    m_turningMotor.setVoltage(turnOutput + turnFeedforward);
+    m_driveMotor.setVoltage((driveOutput + driveFeedforward)/3);
+    m_turningMotor.setVoltage((turnOutput + turnFeedforward)/3);
+  }
+
+  public void stop() {
+    m_driveMotor.setVoltage(0);
+    m_turningMotor.setVoltage(0);
   }
 }

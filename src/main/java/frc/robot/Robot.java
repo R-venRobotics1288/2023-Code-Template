@@ -31,7 +31,7 @@ public class Robot extends TimedRobot {
 
   @Override
   public void teleopPeriodic() {
-    driveWithJoystick(true);
+    driveWithJoystick(false);
     SmartDashboard.putNumber("Joystick X", m_controller.getX());
     SmartDashboard.putNumber("Joystick Y", m_controller.getY());
     m_swerve.teleopPeriodic();
@@ -66,6 +66,8 @@ public class Robot extends TimedRobot {
             * Drivetrain.kMaxAngularSpeed;
     if (driving && (Math.abs(m_controller.getX()) > DriveConstants.deadBand || Math.abs(m_controller.getY()) > DriveConstants.deadBand)) {
       m_swerve.drive(xSpeed, ySpeed, rot, fieldRelative);
+    } else {
+      m_swerve.stop();
     }
    
   }
