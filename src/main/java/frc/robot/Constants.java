@@ -17,7 +17,7 @@ public class Constants {
         public static final double deadBand = 0.15;
 
         public static final double neoTurningGearRatio = 12.8;
-        public static final double neoTurningResoultion = 4096.0;
+        public static final double neoTurningResoultion = 42.0;
 
         public static final double radiansPerEncoderTick = (2 * Math.PI) / (neoTurningGearRatio * neoTurningResoultion);
     }
