@@ -67,7 +67,7 @@ public class SwerveModule {
   public double targetAngle;
   public double error;
 
-  public double getAbsoluteEncoderRad() {
+  public double getAbsoluteEncoder() {
     return m_absoluteEncoder.getAbsolutePosition();
   }
 
@@ -141,7 +141,7 @@ public class SwerveModule {
   }
 
   // Gets the absolute encoder value in radians using the offset value
-  public double getAbsoluteEncoder() {
+  public double getAbsoluteEncoderRad() {
     return m_absoluteEncoder.getAbsolutePosition() - absoluteEncoderOffset;
   }
 
