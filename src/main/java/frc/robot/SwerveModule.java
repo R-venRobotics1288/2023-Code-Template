@@ -116,7 +116,7 @@ public class SwerveModule {
     // to be continuous.
     m_turningPIDController.enableContinuousInput(-Math.PI, Math.PI);
 
-    double absoluteEncoderOffset = offset;
+    absoluteEncoderOffset = offset;
 
     resetEncoders();
   }
