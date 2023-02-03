@@ -95,7 +95,6 @@ public class SwerveModule {
     m_driveEncoder.setPosition(0);
     m_turningEncoder = m_turningMotor.getEncoder();
     m_absoluteEncoder = new CANCoder(turningEncoderChannel);
-    m_absoluteEncoder.setPosition(0);
 
     // Set the distance per pulse for the drive encoder. We can simply use the
     // distance traveled for one rotation of the wheel divided by the encoder
