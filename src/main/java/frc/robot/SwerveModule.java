@@ -37,6 +37,7 @@ public class SwerveModule {
 
 
   private final CANCoder m_absoluteEncoder;
+  private double absoluteEncoderOffset;
 
   public RelativeEncoder getTranslationEncoder() {
     return m_driveEncoder;
@@ -45,7 +46,6 @@ public class SwerveModule {
   public RelativeEncoder getTurningEncoder() {
     return m_turningEncoder;
   }
-
 
   // Gains are for example purposes only - must be determined for your own robot!
   private final PIDController m_drivePIDController = new PIDController(1, 0, 0);
@@ -67,6 +67,10 @@ public class SwerveModule {
   public double targetAngle;
   public double error;
 
+  public double getAbsoluteEncoderRad() {
+    return m_absoluteEncoder.getAbsolutePosition();
+  }
+
   /**
    * Constructs a SwerveModule with a drive motor, turning motor, drive encoder and turning encoder.
    *
@@ -79,7 +83,8 @@ public class SwerveModule {
   public SwerveModule(
       int driveMotorChannel,
       int turningMotorChannel,
-      int turningEncoderChannel) {
+      int turningEncoderChannel,
+      double offset) {
     m_driveMotor = new CANSparkMax(driveMotorChannel, MotorType.kBrushless);
     m_turningMotor = new CANSparkMax(turningMotorChannel, MotorType.kBrushless);
     m_turningMotor.setInverted(true);
@@ -111,6 +116,7 @@ public class SwerveModule {
     // to be continuous.
     m_turningPIDController.enableContinuousInput(-Math.PI, Math.PI);
 
+    double absoluteEncoderOffset = offset;
   }
 
   /**
@@ -132,6 +138,16 @@ public class SwerveModule {
     return new SwerveModulePosition(
         m_driveEncoder.getPosition(), new Rotation2d(m_turningEncoder.getPosition()));
   }
+
+  // Gets the absolute encoder value in radians using the offset value
+  public double getAbsoluteEncoder() {
+    return m_absoluteEncoder.getAbsolutePosition() - absoluteEncoderOffset;
+  }
+
+  public void resetEncoders() {
+    m_driveEncoder.setPosition(0);
+    m_turningEncoder.setPosition(getAbsoluteEncoderRad()/DriveConstants.radiansPerEncoderTick);
+}
 
   /**
    * Sets the desired state for the module.

@@ -28,10 +28,10 @@ public class Drivetrain {
   private final Translation2d m_backRightLocation = new Translation2d(-DriveConstants.robotLength / 2, -DriveConstants.robotWidth / 2);
 
     //CHANGE ENCODER PORTS
-  private final SwerveModule m_frontLeft = new SwerveModule(1, 10, 20);
-  private final SwerveModule m_frontRight = new SwerveModule(8, 2, 21);
-  private final SwerveModule m_backLeft = new SwerveModule(7, 6, 22);
-  private final SwerveModule m_backRight = new SwerveModule(3, 9, 23);
+  private final SwerveModule m_frontLeft = new SwerveModule(1, 10, 20, DriveConstants.startingPositions[0]);
+  private final SwerveModule m_frontRight = new SwerveModule(8, 2, 21, DriveConstants.startingPositions[1]);
+  private final SwerveModule m_backLeft = new SwerveModule(7, 6, 22, DriveConstants.startingPositions[2]);
+  private final SwerveModule m_backRight = new SwerveModule(3, 9, 23, DriveConstants.startingPositions[3]);
 
   private final PigeonIMU m_gyro = new PigeonIMU(30);
 
