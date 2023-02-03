@@ -4,12 +4,11 @@
 
 package frc.robot;
 
-import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.DoubleSolenoid;
+import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.TimedRobot;
-// import edu.wpi.first.wpilibj.motorcontrol.MotorController;
-import com.revrobotics.CANSparkMax;
-import com.revrobotics.CANSparkMax.IdleMode;
-import com.revrobotics.CANSparkMaxLowLevel.MotorType;
+import edu.wpi.first.wpilibj.DoubleSolenoid.Value.*;
+import edu.wpi.first.wpilibj.CAN;
 
 
 /**
@@ -20,25 +19,15 @@ import com.revrobotics.CANSparkMaxLowLevel.MotorType;
  * making it easy to work together.
  */
 public class Robot extends TimedRobot {
-  private static final int kMotorPort = 5;
-  private static final int kJoystickPort = 0;
-  private static final double deadZone = 0.1;
-
-  private CANSparkMax m_motor;
-  private Joystick m_joystick;
+  private DoubleSolenoid solenoid = new DoubleSolenoid(PneumaticsModuleType.CTREPCM,1,2);
 
   @Override
   public void robotInit() {
-    m_motor = new CANSparkMax(kMotorPort, MotorType.kBrushless);
-    // m_motor.restoreFactoryDefaults();
-    m_joystick = new Joystick(kJoystickPort);
+    
   }
 
   @Override
   public void teleopPeriodic() {
-    if (m_joystick.getY() != deadZone || m_joystick.getX() != deadZone) {
-      m_motor.set(m_joystick.getY());
-    }
-    System.out.println(m_joystick.getY());
+    
   }
 }
