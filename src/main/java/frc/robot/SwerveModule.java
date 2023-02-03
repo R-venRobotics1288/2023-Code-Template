@@ -110,7 +110,7 @@ public class SwerveModule {
     config.sensorTimeBase = SensorTimeBase.PerSecond;
     m_absoluteEncoder.configAllSettings(config);
     m_driveEncoder.setPositionConversionFactor(2 * Math.PI * kWheelRadius / kEncoderResolution);
-    m_turningEncoder.setPositionConversionFactor(2 * Math.PI / DriveConstants.radiansPerEncoderTick);
+    m_turningEncoder.setPositionConversionFactor(12.8*Math.PI*2);
 
 
     // Limit the PID Controller's input range between -pi and pi and set the input
