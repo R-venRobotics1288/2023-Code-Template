@@ -36,7 +36,7 @@ public class SwerveModule {
   private final RelativeEncoder m_turningEncoder;
 
 
-  private final CANCoder m_absoluteEncoder;
+  public final CANCoder m_absoluteEncoder;
   private double absoluteEncoderOffset;
 
   public RelativeEncoder getTranslationEncoder() {

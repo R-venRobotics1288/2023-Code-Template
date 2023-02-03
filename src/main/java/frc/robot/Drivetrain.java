@@ -66,6 +66,8 @@ public class Drivetrain {
     SmartDashboard.putNumber("Back Right Encoder", m_backRight.getTurningEncoder().getPosition());
     SmartDashboard.putNumber("Front Left Desired Angle", m_frontRight.targetAngle);
     SmartDashboard.putNumber("Error for front right angle", m_frontRight.error);
+    SmartDashboard.putNumber("Front Left Abs Encoder Postion", m_frontLeft.m_absoluteEncoder.getPosition());
+
 
   }
 
