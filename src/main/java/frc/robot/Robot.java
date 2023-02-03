@@ -30,6 +30,12 @@ public class Robot extends TimedRobot {
   }
 
   @Override
+  public void robotInit() {
+    m_swerve.robotInit();
+  }
+  
+
+  @Override
   public void teleopPeriodic() {
     driveWithJoystick(false);
     SmartDashboard.putNumber("Joystick X", m_controller.getX());

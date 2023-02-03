@@ -37,7 +37,7 @@ public class SwerveModule {
 
 
   public final CANCoder m_absoluteEncoder;
-  private double absoluteEncoderOffset;
+  public double absoluteEncoderOffset;
 
   public RelativeEncoder getTranslationEncoder() {
     return m_driveEncoder;
@@ -110,6 +110,8 @@ public class SwerveModule {
     config.sensorTimeBase = SensorTimeBase.PerSecond;
     m_absoluteEncoder.configAllSettings(config);
     m_driveEncoder.setPositionConversionFactor(2 * Math.PI * kWheelRadius / kEncoderResolution);
+    m_turningEncoder.setPositionConversionFactor(2 * Math.PI / DriveConstants.radiansPerEncoderTick);
+
 
     // Limit the PID Controller's input range between -pi and pi and set the input
     // to be continuous.
@@ -142,7 +144,7 @@ public class SwerveModule {
 
   // Gets the absolute encoder value in radians using the offset value
   public double getAbsoluteEncoderRad() {
-    return m_absoluteEncoder.getAbsolutePosition() - absoluteEncoderOffset;
+    return m_absoluteEncoder.getPosition() - absoluteEncoderOffset;
   }
 
   public void resetEncoders() {

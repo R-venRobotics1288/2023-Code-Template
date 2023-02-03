@@ -71,6 +71,12 @@ public class Drivetrain {
 
   }
 
+  public void robotInit() {
+    SmartDashboard.putNumber("Front Left Abs Encoder Postion On Start", m_frontLeft.getAbsoluteEncoderRad());
+    SmartDashboard.putNumber("Front Left Encoder On Start", m_frontLeft.getTurningEncoder().getPosition());
+    SmartDashboard.putNumber("Front Left Encoder Offset", m_frontLeft.absoluteEncoderOffset);
+  }
+
 
   /**
    * Method to drive the robot using joystick info.
