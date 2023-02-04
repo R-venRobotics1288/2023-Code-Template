@@ -48,19 +48,22 @@ public class SwerveModule {
   }
 
   // Gains are for example purposes only - must be determined for your own robot!
-  private final PIDController m_drivePIDController = new PIDController(1, 0, 0);
+  private final PIDController m_drivePIDController = new PIDController(0.25, 0, 0);
 
   // Gains are for example purposes only - must be determined for your own robot!
-  private final ProfiledPIDController m_turningPIDController =
-      new ProfiledPIDController(
-          0.01,
-          0,
-          0,
-          new TrapezoidProfile.Constraints(
-              kModuleMaxAngularVelocity, kModuleMaxAngularAcceleration));
+  // private final ProfiledPIDController m_turningPIDController =
+  //     new ProfiledPIDController(
+  //         0.1,
+  //         0,
+  //         0,
+  //         new TrapezoidProfile.Constraints(
+  //             kModuleMaxAngularVelocity, kModuleMaxAngularAcceleration));
+
+  private final PIDController m_turningPIDController = new PIDController(0.6, 0, 0);
+
 
   // Gains are for example purposes only - must be determined for your own robot!
-  private final SimpleMotorFeedforward m_driveFeedforward = new SimpleMotorFeedforward(1, 3);
+  private final SimpleMotorFeedforward m_driveFeedforward = new SimpleMotorFeedforward(0.015, 0.285);
   private final SimpleMotorFeedforward m_turnFeedforward = new SimpleMotorFeedforward(1, 0.5);
 
   // Testing variables for shuffleboard
@@ -87,7 +90,7 @@ public class SwerveModule {
       double offset) {
     m_driveMotor = new CANSparkMax(driveMotorChannel, MotorType.kBrushless);
     m_turningMotor = new CANSparkMax(turningMotorChannel, MotorType.kBrushless);
-    m_turningMotor.setInverted(true);
+    m_turningMotor.setInverted(false);
     m_turningMotor.burnFlash();
     
 
@@ -149,7 +152,7 @@ public class SwerveModule {
 
   public void resetEncoders() {
     m_driveEncoder.setPosition(0);
-    m_turningEncoder.setPosition(getAbsoluteEncoderRad()/DriveConstants.radiansPerEncoderTick);
+    m_turningEncoder.setPosition(getAbsoluteEncoderRad()/DriveConstants.radiansPerEncoderRev);
 }
 
   /**
@@ -163,7 +166,7 @@ public class SwerveModule {
 
 
     final SwerveModuleState state =
-        SwerveModuleState.optimize(desiredState, new Rotation2d(m_turningEncoder.getPosition() * DriveConstants.radiansPerEncoderTick));
+        SwerveModuleState.optimize(desiredState, new Rotation2d(getAbsoluteEncoderRad()));
 
     // Calculate the drive output from the drive PID controller.
     final double driveOutput =
@@ -173,21 +176,22 @@ public class SwerveModule {
 
     // Calculate the turning motor output from the turning PID controller.
     final double turnOutput =
-        m_turningPIDController.calculate(m_turningEncoder.getPosition() * DriveConstants.radiansPerEncoderTick, state.angle.getRadians());
+        m_turningPIDController.calculate(getAbsoluteEncoderRad(), state.angle.getRadians());
 
     targetAngle = state.angle.getRadians();
 
 
 
     final double turnFeedforward =
-        m_turnFeedforward.calculate(m_turningPIDController.getSetpoint().velocity);
+        m_turnFeedforward.calculate(m_turningPIDController.getSetpoint());
 
-    m_driveMotor.setVoltage((driveOutput + driveFeedforward) / 3);
-    m_turningMotor.setVoltage((turnOutput + turnFeedforward) / 3);
+    // m_driveMotor.setVoltage((driveOutput + driveFeedforward));
+    m_driveMotor.set(driveOutput + driveFeedforward);
+    m_turningMotor.set(turnOutput);
   }
 
   public void stop() {
-    m_driveMotor.setVoltage(0);
-    m_turningMotor.setVoltage(0);
+    m_driveMotor.set(0);
+    m_turningMotor.set(0);
   }
 }

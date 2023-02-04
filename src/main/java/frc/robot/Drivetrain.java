@@ -59,14 +59,20 @@ public class Drivetrain {
   }
 
   
-  public void teleopPeriodic() {
-    SmartDashboard.putNumber("Front Left Encoder", m_frontLeft.getTurningEncoder().getPosition());
-    SmartDashboard.putNumber("Front Right Encoder", m_frontRight.getTurningEncoder().getPosition());
-    SmartDashboard.putNumber("Back Left Encoder", m_backLeft.getTurningEncoder().getPosition());
-    SmartDashboard.putNumber("Back Right Encoder", m_backRight.getTurningEncoder().getPosition());
-    SmartDashboard.putNumber("Front Left Desired Angle", m_frontRight.targetAngle);
-    SmartDashboard.putNumber("Error for front right angle", m_frontRight.error);
+  public void robotPeriodic() {
+    SmartDashboard.putNumber("Front Left Relative Encoder", m_frontLeft.getTurningEncoder().getPosition());
+    SmartDashboard.putNumber("Front Right Relative Encoder", m_frontRight.getTurningEncoder().getPosition());
+    SmartDashboard.putNumber("Back Left Relative Encoder", m_backLeft.getTurningEncoder().getPosition());
+    SmartDashboard.putNumber("Back Right Relative Encoder", m_backRight.getTurningEncoder().getPosition());
+    SmartDashboard.putNumber("Front Left Desired Angle", m_frontLeft.targetAngle);
+    SmartDashboard.putNumber("Front Right Desired Angle", m_frontRight.targetAngle);
+    SmartDashboard.putNumber("Back Left Desired Angle", m_backLeft.targetAngle);
+    SmartDashboard.putNumber("Back Right Desired Angle", m_backRight.targetAngle);
     SmartDashboard.putNumber("Front Left Abs Encoder Postion", m_frontLeft.m_absoluteEncoder.getPosition());
+    SmartDashboard.putNumber("Front Right Abs Encoder Postion", m_frontRight.m_absoluteEncoder.getPosition());
+    SmartDashboard.putNumber("Back Left Abs Encoder Postion", m_backLeft.m_absoluteEncoder.getPosition());
+    SmartDashboard.putNumber("Back Right Abs Encoder Postion", m_backRight.m_absoluteEncoder.getPosition());
+
 
 
   }
