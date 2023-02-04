@@ -7,8 +7,10 @@ package frc.robot;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.DoubleSolenoid.Value.*;
 import edu.wpi.first.wpilibj.CAN;
+import edu.wpi.first.wpilibj.Compressor;
 
 
 /**
@@ -19,15 +21,18 @@ import edu.wpi.first.wpilibj.CAN;
  * making it easy to work together.
  */
 public class Robot extends TimedRobot {
-  private DoubleSolenoid solenoid = new DoubleSolenoid(PneumaticsModuleType.CTREPCM,1,2);
-
+  private DoubleSolenoid solenoid;
+  private XboxController xbox;
   @Override
   public void robotInit() {
-    
+    solenoid = new DoubleSolenoid(PneumaticsModuleType.CTREPCM,0,7);
+    xbox = new XboxController(0);
   }
 
   @Override
   public void teleopPeriodic() {
-    
+    if (xbox.getXButtonPressed()) {
+      solenoid.toggle();
+    }
   }
 }
