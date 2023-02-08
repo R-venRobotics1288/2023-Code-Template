@@ -23,9 +23,11 @@ import edu.wpi.first.wpilibj.Compressor;
 public class Robot extends TimedRobot {
   private DoubleSolenoid solenoid;
   private XboxController xbox;
+  private Compressor compressor;
   @Override
   public void robotInit() {
     solenoid = new DoubleSolenoid(PneumaticsModuleType.CTREPCM,0,7);
+    compressor = new Compressor(0, PneumaticsModuleType.CTREPCM);
     xbox = new XboxController(0);
   }
 
