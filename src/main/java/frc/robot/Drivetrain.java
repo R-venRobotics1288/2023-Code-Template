@@ -50,9 +50,9 @@ public class Drivetrain {
   //           m_backRight.getPosition()
   //         });
 
-  public void resetWheelAngles() {
-    m_frontLeft.setDesiredState(new SwerveModuleState(0, new Rotation2d(DriveConstants.startingPositions[0])));
-  }
+  // public void resteOffsets() {
+  //     m_frontLeft.setDesiredState(DriveConstants.startingPositions[0]);
+  // }
 
   public Drivetrain() {
     m_gyro.setYaw(0);
@@ -123,5 +123,12 @@ public class Drivetrain {
     m_frontRight.stop();
     m_backLeft.stop();
     m_backRight.stop();
+  }
+
+  public void setWheelsToOffset() {
+    m_frontLeft.setWheelToOffset();
+    m_frontRight.setWheelToOffset();
+    m_backLeft.setWheelToOffset();
+    m_backRight.setWheelToOffset();
   }
 }

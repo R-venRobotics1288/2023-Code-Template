@@ -131,6 +131,7 @@ public class SwerveModule {
     resetEncoders();
   }
 
+
   /**
    * Returns the current state of the module.
    *
@@ -158,8 +159,13 @@ public class SwerveModule {
 
   public void resetEncoders() {
     m_driveEncoder.setPosition(0);
-    m_turningEncoder.setPosition(getAbsoluteEncoderRad()/DriveConstants.radiansPerEncoderRev);
+    m_turningEncoder.setPosition(getAbsoluteEncoderRad() / DriveConstants.radiansPerEncoderRev);
 }
+
+  public void setWheelToOffset() {
+    SwerveModuleState new_state = new SwerveModuleState(0, new Rotation2d(absoluteEncoderOffset));
+    setDesiredState(new_state);
+  }
 
   /**
    * Sets the desired state for the module.
@@ -168,9 +174,6 @@ public class SwerveModule {
    */
   public void setDesiredState(SwerveModuleState desiredState) {
     // Optimize the reference state to avoid spinning further than 90 degrees
-    
-
-
     final SwerveModuleState state =
         SwerveModuleState.optimize(desiredState, new Rotation2d(getAbsoluteEncoderRad()));
 

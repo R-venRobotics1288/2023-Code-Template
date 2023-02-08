@@ -6,6 +6,8 @@ package frc.robot;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.filter.SlewRateLimiter;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.XboxController;
 import frc.robot.Constants.DriveConstants;
@@ -41,6 +43,9 @@ public class Robot extends TimedRobot {
     SmartDashboard.putNumber("Joystick X", m_controller.getX());
     SmartDashboard.putNumber("Joystick Y", m_controller.getY());
     // m_swerve.teleopPeriodic();
+    if (m_controller.getRawButton(7)) {
+      m_swerve.setWheelsToOffset();
+    }
   
   }
 
