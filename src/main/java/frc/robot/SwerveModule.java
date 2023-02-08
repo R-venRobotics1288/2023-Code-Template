@@ -6,6 +6,7 @@ package frc.robot;
 
 // import edu.wpi.first.wpilibj.motorcontrol.MotorController;
 import com.ctre.phoenix.sensors.CANCoder;
+import com.ctre.phoenix.sensors.SensorInitializationStrategy;
 import com.ctre.phoenix.sensors.CANCoderConfiguration;
 import com.ctre.phoenix.sensors.SensorTimeBase;
 import com.revrobotics.CANSparkMax;
@@ -111,7 +112,12 @@ public class SwerveModule {
     config.sensorCoefficient = 2 * Math.PI / kEncoderResolution;
     config.unitString = "rad";
     config.sensorTimeBase = SensorTimeBase.PerSecond;
+    
+    config.initializationStrategy = SensorInitializationStrategy.BootToAbsolutePosition;
+    // m_absoluteEncoder.setPositionToAbsolute();
+    // m_absoluteEncoder.configSensorInitializationStrategy(SensorInitializationStrategy.BootToAbsolutePosition);
     m_absoluteEncoder.configAllSettings(config);
+    
     m_driveEncoder.setPositionConversionFactor(2 * Math.PI * kWheelRadius / kEncoderResolution);
     m_turningEncoder.setPositionConversionFactor(12.8*Math.PI*2);
 
