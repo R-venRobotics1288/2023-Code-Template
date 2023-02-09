@@ -126,9 +126,9 @@ public class Drivetrain {
   }
 
   public void setWheelsToOffset() {
-    m_frontLeft.setWheelToOffset();
-    m_frontRight.setWheelToOffset();
-    m_backLeft.setWheelToOffset();
-    m_backRight.setWheelToOffset();
+    m_frontLeft.setStateToOffset();
+    m_frontRight.setStateToOffset();
+    m_backLeft.setStateToOffset();
+    m_backRight.setStateToOffset();
   }
 }
