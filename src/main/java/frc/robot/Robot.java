@@ -24,6 +24,8 @@ public class Robot extends TimedRobot {
   private final SlewRateLimiter m_yspeedLimiter = new SlewRateLimiter(3);
   private final SlewRateLimiter m_rotLimiter = new SlewRateLimiter(3);
   private boolean driving = true;
+  private final Pneumatics m_pneumatics = new Pneumatics();
+  private final XboxController xBoxController = new XboxController(0);
 
   @Override
   public void autonomousPeriodic() {
@@ -34,6 +36,11 @@ public class Robot extends TimedRobot {
   @Override
   public void robotPeriodic() {
     m_swerve.robotPeriodic();
+  }
+
+  @Override
+  public void teleopInit() {
+    m_pneumatics.setStartingState();
   }
   
 
@@ -46,7 +53,9 @@ public class Robot extends TimedRobot {
     if (m_controller.getRawButton(7)) {
       m_swerve.setWheelsToOffset();
     }
-  
+    if (xBoxController.getXButton()) {
+      m_pneumatics.activate();
+    }
   }
 
   private void driveWithJoystick(boolean fieldRelative) {
