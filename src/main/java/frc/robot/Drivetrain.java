@@ -60,10 +60,6 @@ public class Drivetrain {
 
   
   public void robotPeriodic() {
-    SmartDashboard.putNumber("Front Left Relative Encoder", m_frontLeft.getTurningEncoder().getPosition());
-    SmartDashboard.putNumber("Front Right Relative Encoder", m_frontRight.getTurningEncoder().getPosition());
-    SmartDashboard.putNumber("Back Left Relative Encoder", m_backLeft.getTurningEncoder().getPosition());
-    SmartDashboard.putNumber("Back Right Relative Encoder", m_backRight.getTurningEncoder().getPosition());
     SmartDashboard.putNumber("Front Left Desired Angle", m_frontLeft.targetAngle);
     SmartDashboard.putNumber("Front Right Desired Angle", m_frontRight.targetAngle);
     SmartDashboard.putNumber("Back Left Desired Angle", m_backLeft.targetAngle);

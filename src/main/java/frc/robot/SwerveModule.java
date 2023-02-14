@@ -186,6 +186,7 @@ public class SwerveModule {
   }
 
   public void setStateToOffset() {
+    // Testing purposes only
     final SwerveModuleState state = SwerveModuleState.optimize(
         new SwerveModuleState(0, new Rotation2d(absoluteEncoderOffset)), new Rotation2d(getAbsoluteEncoderRad()));
 
