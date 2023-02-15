@@ -64,10 +64,10 @@ public class Drivetrain {
     SmartDashboard.putNumber("Front Right Desired Angle", m_frontRight.targetAngle);
     SmartDashboard.putNumber("Back Left Desired Angle", m_backLeft.targetAngle);
     SmartDashboard.putNumber("Back Right Desired Angle", m_backRight.targetAngle);
-    SmartDashboard.putNumber("Front Left Abs Encoder Postion", m_frontLeft.m_absoluteEncoder.getPosition());
-    SmartDashboard.putNumber("Front Right Abs Encoder Postion", m_frontRight.m_absoluteEncoder.getPosition());
-    SmartDashboard.putNumber("Back Left Abs Encoder Postion", m_backLeft.m_absoluteEncoder.getPosition());
-    SmartDashboard.putNumber("Back Right Abs Encoder Postion", m_backRight.m_absoluteEncoder.getPosition());
+    SmartDashboard.putNumber("Front Left Abs Encoder Postion", m_frontLeft.getAbsoluteEncoderRad()%(2*Math.PI));
+    SmartDashboard.putNumber("Front Right Abs Encoder Postion", m_frontRight.getAbsoluteEncoderRad()%(2*Math.PI));
+    SmartDashboard.putNumber("Back Left Abs Encoder Postion", m_backLeft.getAbsoluteEncoderRad()%(2*Math.PI));
+    SmartDashboard.putNumber("Back Right Abs Encoder Postion", m_backRight.getAbsoluteEncoderRad()%(2*Math.PI));
 
 
 

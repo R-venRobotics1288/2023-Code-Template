@@ -8,10 +8,10 @@ public class Constants {
         public static final double robotWidth = 0.47;
         // Front Left, Front Right, Back Left, Back Right
         public static final double[] startingPositions = {
-            6.030066289007664 + Math.PI, 
-            -0.342077024281025, 
-            3.614051431417465 + Math.PI, 
-            -0.220892786979675 + Math.PI
+            2.868430327420519, 
+            2.748799117443092, 
+            5.252263402970456, 
+            3.052513999782434
         };
 
         public static final double deadBand = 0.15;

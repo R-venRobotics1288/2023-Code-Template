@@ -56,8 +56,8 @@ public class Robot extends TimedRobot {
         -m_xspeedLimiter.calculate(MathUtil.applyDeadband(m_controller.getY(), DriveConstants.deadBand))
             * Drivetrain.kMaxSpeed;
 
-    System.out.println("Begin iteration");
-    System.out.println("xSpeed: "+xSpeed);
+    // System.out.println("Begin iteration");
+    // System.out.println("xSpeed: "+xSpeed);
 
     // Get the y speed or sideways/strafe speed. We are inverting this because
     // we want a positive value when we pull to the left. Xbox controllers
@@ -66,7 +66,7 @@ public class Robot extends TimedRobot {
         -m_yspeedLimiter.calculate(MathUtil.applyDeadband(m_controller.getX(), DriveConstants.deadBand))
             * Drivetrain.kMaxSpeed;
 
-    System.out.println("ySpeed: "+ySpeed);
+    // System.out.println("ySpeed: "+ySpeed);
 
     // Get the rate of angular rotation. We are inverting this because we want a
     // positive value when we pull to the left (remember, CCW is positive in

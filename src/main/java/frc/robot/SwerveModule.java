@@ -49,15 +49,6 @@ public class SwerveModule {
   // Gains are for example purposes only - must be determined for your own robot!
   private final PIDController m_drivePIDController = new PIDController(0.25, 0, 0);
 
-  // Gains are for example purposes only - must be determined for your own robot!
-  // private final ProfiledPIDController m_turningPIDController =
-  // new ProfiledPIDController(
-  // 0.1,
-  // 0,
-  // 0,
-  // new TrapezoidProfile.Constraints(
-  // kModuleMaxAngularVelocity, kModuleMaxAngularAcceleration));
-
   private final PIDController m_turningPIDController = new PIDController(0.6, 0, 0);
 
   // Gains are for example purposes only - must be determined for your own robot!
@@ -111,6 +102,7 @@ public class SwerveModule {
     config.sensorCoefficient = 2 * Math.PI / kEncoderResolution;
     config.unitString = "rad";
     config.sensorTimeBase = SensorTimeBase.PerSecond;
+    config.magnetOffsetDegrees = offset * 180 / Math.PI;
 
     config.initializationStrategy = SensorInitializationStrategy.BootToAbsolutePosition;
     // m_absoluteEncoder.setPositionToAbsolute();
@@ -151,7 +143,7 @@ public class SwerveModule {
 
   // Gets the absolute encoder value in radians using the offset value
   public double getAbsoluteEncoderRad() {
-    return m_absoluteEncoder.getPosition() - absoluteEncoderOffset;
+    return m_absoluteEncoder.getPosition();
   }
 
   public void resetEncoders() {
@@ -166,7 +158,9 @@ public class SwerveModule {
    */
   public void setDesiredState(SwerveModuleState desiredState) {
     // Optimize the reference state to avoid spinning further than 90 degrees
+    System.out.println("Before Optimize: " + getAbsoluteEncoderRad());
     final SwerveModuleState state = SwerveModuleState.optimize(desiredState, new Rotation2d(getAbsoluteEncoderRad()));
+    System.out.println("After Optimize: " + state);
 
     // Calculate the drive output from the drive PID controller.
     final double driveOutput = m_drivePIDController.calculate(m_driveEncoder.getVelocity(), state.speedMetersPerSecond);
