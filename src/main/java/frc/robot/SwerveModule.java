@@ -67,11 +67,10 @@ public class SwerveModule {
    * Constructs a SwerveModule with a drive motor, turning motor, drive encoder
    * and turning encoder.
    *
-   * @param driveMotorChannel      PWM output for the drive motor.
-   * @param turningMotorChannel    PWM output for the turning motor.
-   * @param driveEncoderChannelA   DIO input for the drive encoder channel A
-   * @param turningEncoderChannelA DIO input for the turning encoder channel A
-   * @param turningEncoderChannelB DIO input for the turning encoder channel B
+   * @param driveMotorChannel      CAN id for the drive motor.
+   * @param turningMotorChannel    CAN id for the turning motor.
+   * @param turningEncoderChannel  CAN id for the absolute encoder
+   * @param offset                 Offset for the motor. Basically the forward position value
    */
   public SwerveModule(
       int driveMotorChannel,
@@ -88,16 +87,7 @@ public class SwerveModule {
     m_turningEncoder = m_turningMotor.getEncoder();
     m_absoluteEncoder = new CANCoder(turningEncoderChannel);
 
-    // Set the distance per pulse for the drive encoder. We can simply use the
-    // distance traveled for one rotation of the wheel divided by the encoder
-    // resolution.
-    // m_driveEncoder.setDistancePerPulse(2 * Math.PI * kWheelRadius /
-    // kEncoderResolution);
-
-    // Set the distance (in this case, angle) in radians per pulse for the turning
-    // encoder.
-    // This is the the angle through an entire rotation (2 * pi) divided by the
-    // encoder resolution.
+    // Configuration settings for Absolute Encoder
     CANCoderConfiguration config = new CANCoderConfiguration();
     config.sensorCoefficient = 2 * Math.PI / kEncoderResolution;
     config.unitString = "rad";
@@ -180,7 +170,7 @@ public class SwerveModule {
   }
 
   public void setStateToOffset() {
-    // Testing purposes only
+    // Testing purposes only. Sets the desired state to the offset value
     final SwerveModuleState state = SwerveModuleState.optimize(
         new SwerveModuleState(0, new Rotation2d(absoluteEncoderOffset)), new Rotation2d(getAbsoluteEncoderRad()));
 
