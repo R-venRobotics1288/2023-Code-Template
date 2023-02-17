@@ -4,6 +4,7 @@
 
 package frc.robot;
 
+import com.ctre.phoenix.sensors.AbsoluteSensorRange;
 // import edu.wpi.first.wpilibj.motorcontrol.MotorController;
 import com.ctre.phoenix.sensors.CANCoder;
 import com.ctre.phoenix.sensors.SensorInitializationStrategy;
@@ -59,9 +60,9 @@ public class SwerveModule {
   public double targetAngle;
   public double error;
 
-  public double getAbsoluteEncoder() {
-    return m_absoluteEncoder.getAbsolutePosition();
-  }
+  // public double getAbsoluteEncoder() {
+  //   return m_absoluteEncoder.getAbsolutePosition();
+  // }
 
   /**
    * Constructs a SwerveModule with a drive motor, turning motor, drive encoder
@@ -92,7 +93,9 @@ public class SwerveModule {
     config.sensorCoefficient = 2 * Math.PI / kEncoderResolution;
     config.unitString = "rad";
     config.sensorTimeBase = SensorTimeBase.PerSecond;
-    config.magnetOffsetDegrees = offset * 180 / Math.PI;
+    // config.magnetOffsetDegrees = offset * 180 / Math.PI;
+    config.magnetOffsetDegrees = 0;
+    config.absoluteSensorRange = AbsoluteSensorRange.Signed_PlusMinus180;
 
     config.initializationStrategy = SensorInitializationStrategy.BootToAbsolutePosition;
     // m_absoluteEncoder.setPositionToAbsolute();
@@ -108,7 +111,7 @@ public class SwerveModule {
 
     absoluteEncoderOffset = offset;
 
-    resetEncoders();
+    // resetEncoders();
   }
 
   /**
@@ -133,13 +136,13 @@ public class SwerveModule {
 
   // Gets the absolute encoder value in radians using the offset value
   public double getAbsoluteEncoderRad() {
-    return m_absoluteEncoder.getPosition();
+    return m_absoluteEncoder.getAbsolutePosition();
   }
 
-  public void resetEncoders() {
-    m_driveEncoder.setPosition(0);
-    m_turningEncoder.setPosition(getAbsoluteEncoderRad() / DriveConstants.radiansPerEncoderRev);
-  }
+  // public void resetEncoders() {
+  //   m_driveEncoder.setPosition(0);
+  //   m_turningEncoder.setPosition(getAbsoluteEncoderRad() / DriveConstants.radiansPerEncoderRev);
+  // }
 
   /**
    * Sets the desired state for the module.
@@ -149,6 +152,7 @@ public class SwerveModule {
   public void setDesiredState(SwerveModuleState desiredState) {
     // Optimize the reference state to avoid spinning further than 90 degrees
     System.out.println("Before Optimize: " + getAbsoluteEncoderRad());
+    desiredState.angle = desiredState.angle.plus(new Rotation2d(absoluteEncoderOffset));
     final SwerveModuleState state = SwerveModuleState.optimize(desiredState, new Rotation2d(getAbsoluteEncoderRad()));
     System.out.println("After Optimize: " + state);
 
@@ -166,17 +170,12 @@ public class SwerveModule {
 
     // m_driveMotor.setVoltage((driveOutput + driveFeedforward));
     m_driveMotor.set(driveOutput + driveFeedforward);
-    m_turningMotor.set(turnOutput);
+    m_turningMotor.set(turnOutput / 3);
   }
 
   public void setStateToOffset() {
     // Testing purposes only. Sets the desired state to the offset value
-    final SwerveModuleState state = SwerveModuleState.optimize(
-        new SwerveModuleState(0, new Rotation2d(absoluteEncoderOffset)), new Rotation2d(getAbsoluteEncoderRad()));
-
-    final double turnOutput = m_turningPIDController.calculate(getAbsoluteEncoderRad(), state.angle.getRadians());
-
-    m_turningMotor.set(turnOutput);
+    setDesiredState(new SwerveModuleState(0, new Rotation2d(0)));
   }
 
   public void stop() {
