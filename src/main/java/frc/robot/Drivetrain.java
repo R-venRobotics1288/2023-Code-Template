@@ -33,7 +33,11 @@ public class Drivetrain {
   private final SwerveModule m_backLeft = new SwerveModule(7, 6, 22, DriveConstants.startingPositions[2]);
   private final SwerveModule m_backRight = new SwerveModule(3, 9, 23, DriveConstants.startingPositions[3]);
 
-  private final PigeonIMU m_gyro = new PigeonIMU(30);
+  public final PigeonIMU m_gyro = new PigeonIMU(30);
+
+  private double getGyroValue() {
+    return m_gyro.getYaw() * Math.PI / 180;
+  }
 
   private final SwerveDriveKinematics m_kinematics =
       new SwerveDriveKinematics(
@@ -68,6 +72,7 @@ public class Drivetrain {
     SmartDashboard.putNumber("Front Right Abs Encoder Postion", m_frontRight.getAbsoluteEncoderRad());
     SmartDashboard.putNumber("Back Left Abs Encoder Postion", m_backLeft.getAbsoluteEncoderRad());
     SmartDashboard.putNumber("Back Right Abs Encoder Postion", m_backRight.getAbsoluteEncoderRad());
+    SmartDashboard.putNumber("Gyro Yaw Value", getGyroValue());
 
   }
 
@@ -90,7 +95,7 @@ public class Drivetrain {
     final SwerveModuleState[] swerveModuleStates =
         m_kinematics.toSwerveModuleStates(
             fieldRelative
-                ? ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, rot, new Rotation2d(m_gyro.getYaw()))
+                ? ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, rot, new Rotation2d(getGyroValue()))
                 : new ChassisSpeeds(xSpeed, ySpeed, rot));
     SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleStates, kMaxSpeed);
     m_frontLeft.setDesiredState(swerveModuleStates[0]);
