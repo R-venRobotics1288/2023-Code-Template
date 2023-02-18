@@ -69,8 +69,6 @@ public class Drivetrain {
     SmartDashboard.putNumber("Back Left Abs Encoder Postion", m_backLeft.getAbsoluteEncoderRad());
     SmartDashboard.putNumber("Back Right Abs Encoder Postion", m_backRight.getAbsoluteEncoderRad());
 
-
-
   }
 
   public void robotInit() {

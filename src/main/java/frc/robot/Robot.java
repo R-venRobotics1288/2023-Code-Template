@@ -46,6 +46,7 @@ public class Robot extends TimedRobot {
     if (m_controller.getRawButton(7)) {
       m_swerve.setWheelsToOffset();
     }
+
   
   }
 
@@ -53,7 +54,7 @@ public class Robot extends TimedRobot {
     // Get the x speed. We are inverting this because Xbox controllers return
     // negative values when we push forward.
     final var xSpeed =
-        -m_xspeedLimiter.calculate(MathUtil.applyDeadband(m_controller.getY(), DriveConstants.deadBand))
+        -m_xspeedLimiter.calculate(MathUtil.applyDeadband(m_controller.getX(), DriveConstants.deadBand))
             * Drivetrain.kMaxSpeed;
 
     // System.out.println("Begin iteration");
@@ -63,7 +64,7 @@ public class Robot extends TimedRobot {
     // we want a positive value when we pull to the left. Xbox controllers
     // return positive values when you pull to the right by default.
     final var ySpeed =
-        -m_yspeedLimiter.calculate(MathUtil.applyDeadband(m_controller.getX(), DriveConstants.deadBand))
+        -m_yspeedLimiter.calculate(MathUtil.applyDeadband(m_controller.getY(), DriveConstants.deadBand))
             * Drivetrain.kMaxSpeed;
 
     // System.out.println("ySpeed: "+ySpeed);
