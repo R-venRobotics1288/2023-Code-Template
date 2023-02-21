@@ -33,7 +33,11 @@ public class Drivetrain {
   private final SwerveModule m_backLeft = new SwerveModule(7, 6, 22, DriveConstants.startingPositions[2]);
   private final SwerveModule m_backRight = new SwerveModule(3, 9, 23, DriveConstants.startingPositions[3]);
 
-  private final PigeonIMU m_gyro = new PigeonIMU(30);
+  public final PigeonIMU m_gyro = new PigeonIMU(30);
+
+  private double getGyroValue() {
+    return m_gyro.getYaw() * Math.PI / 180;
+  }
 
   private final SwerveDriveKinematics m_kinematics =
       new SwerveDriveKinematics(
@@ -60,20 +64,15 @@ public class Drivetrain {
 
   
   public void robotPeriodic() {
-    SmartDashboard.putNumber("Front Left Relative Encoder", m_frontLeft.getTurningEncoder().getPosition());
-    SmartDashboard.putNumber("Front Right Relative Encoder", m_frontRight.getTurningEncoder().getPosition());
-    SmartDashboard.putNumber("Back Left Relative Encoder", m_backLeft.getTurningEncoder().getPosition());
-    SmartDashboard.putNumber("Back Right Relative Encoder", m_backRight.getTurningEncoder().getPosition());
     SmartDashboard.putNumber("Front Left Desired Angle", m_frontLeft.targetAngle);
     SmartDashboard.putNumber("Front Right Desired Angle", m_frontRight.targetAngle);
     SmartDashboard.putNumber("Back Left Desired Angle", m_backLeft.targetAngle);
     SmartDashboard.putNumber("Back Right Desired Angle", m_backRight.targetAngle);
-    SmartDashboard.putNumber("Front Left Abs Encoder Postion", m_frontLeft.m_absoluteEncoder.getPosition());
-    SmartDashboard.putNumber("Front Right Abs Encoder Postion", m_frontRight.m_absoluteEncoder.getPosition());
-    SmartDashboard.putNumber("Back Left Abs Encoder Postion", m_backLeft.m_absoluteEncoder.getPosition());
-    SmartDashboard.putNumber("Back Right Abs Encoder Postion", m_backRight.m_absoluteEncoder.getPosition());
-
-
+    SmartDashboard.putNumber("Front Left Abs Encoder Postion", m_frontLeft.getAbsoluteEncoderRad());
+    SmartDashboard.putNumber("Front Right Abs Encoder Postion", m_frontRight.getAbsoluteEncoderRad());
+    SmartDashboard.putNumber("Back Left Abs Encoder Postion", m_backLeft.getAbsoluteEncoderRad());
+    SmartDashboard.putNumber("Back Right Abs Encoder Postion", m_backRight.getAbsoluteEncoderRad());
+    SmartDashboard.putNumber("Gyro Yaw Value", getGyroValue());
 
   }
 
@@ -96,7 +95,7 @@ public class Drivetrain {
     final SwerveModuleState[] swerveModuleStates =
         m_kinematics.toSwerveModuleStates(
             fieldRelative
-                ? ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, rot, new Rotation2d(m_gyro.getYaw()))
+                ? ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, rot, new Rotation2d(getGyroValue()))
                 : new ChassisSpeeds(xSpeed, ySpeed, rot));
     SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleStates, kMaxSpeed);
     m_frontLeft.setDesiredState(swerveModuleStates[0]);
