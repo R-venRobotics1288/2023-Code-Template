@@ -25,6 +25,7 @@ public class Robot extends TimedRobot {
   private final SlewRateLimiter m_rotLimiter = new SlewRateLimiter(3);
   private boolean driving = true;
   private double speedMultiplier = 1.0; // For speed controll via button press
+  // private final Pneumatics m_pneumatics = new Pneumatics();
 
   @Override
   public void autonomousPeriodic() {
@@ -36,6 +37,11 @@ public class Robot extends TimedRobot {
   public void robotPeriodic() {
     m_swerve.robotPeriodic();
   }
+
+  @Override
+  public void teleopInit() {
+    m_pneumatics.setStartingState();
+  }
   
 
   @Override
@@ -44,12 +50,13 @@ public class Robot extends TimedRobot {
     SmartDashboard.putNumber("Left Joystick X", m_controller.getLeftX());
     SmartDashboard.putNumber("Left Joystick Y", m_controller.getLeftY());
     SmartDashboard.putNumber("Right Joystick X", m_controller.getRawAxis(2));
-    // m_swerve.teleopPeriodic();
-    // if (m_controller.getRawButton(7)) {
-    //   m_swerve.setWheelsToOffset();
-    // }
-
-  
+    m_swerve.teleopPeriodic();
+    if (m_controller.getRawButton(7)) {
+      m_swerve.setWheelsToOffset();
+    }
+    if (xBoxController.getXButton()) {
+      m_pneumatics.activate();
+    }
   }
 
   private void driveWithJoystick(boolean fieldRelative) {
