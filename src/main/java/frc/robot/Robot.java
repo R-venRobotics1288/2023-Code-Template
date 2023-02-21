@@ -16,7 +16,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class Robot extends TimedRobot {
   // private final XboxController m_controller = new XboxController(0);
-  private final XboxController m_controller = new XboxController(0);
+  private final XboxController m_controller = new XboxController(1);
   private final Drivetrain m_swerve = new Drivetrain();
 
   // Slew rate limiters to make joystick inputs more gentle; 1/3 sec from 0 to 1.
@@ -61,7 +61,8 @@ public class Robot extends TimedRobot {
       speedMultiplier = 1.0;
     }
 
-    if (m_controller.getLeftBumperPressed()) {
+    // Not tested yet - 2/21/23
+    if (m_controller.getRawButton(9) && m_controller.getRawButton(10))  {
       m_swerve.m_gyro.setYaw(0);
     }
 
