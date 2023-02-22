@@ -14,6 +14,10 @@ import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants.DriveConstants;
 
+import java.util.Optional;
+
+import org.photonvision.EstimatedRobotPose;
+
 // import edu.wpi.first.wpilibj.AnalogGyro;
 import com.ctre.phoenix.sensors.PigeonIMU;
 
@@ -34,6 +38,7 @@ public class Drivetrain {
   private final SwerveModule m_backRight = new SwerveModule(3, 9, 23, DriveConstants.startingPositions[3]);
 
   public final PigeonIMU m_gyro = new PigeonIMU(30);
+  public Camera camera = new Camera("raven1288");
 
   private double getGyroValue() {
     return m_gyro.getYaw() * Math.PI / 180;
@@ -43,16 +48,16 @@ public class Drivetrain {
       new SwerveDriveKinematics(
           m_frontLeftLocation, m_frontRightLocation, m_backLeftLocation, m_backRightLocation);
 
-  // private final SwerveDriveOdometry m_odometry =
-  //     new SwerveDriveOdometry(
-  //         m_kinematics,
-  //         m_gyro.getRotation2d(),
-  //         new SwerveModulePosition[] {
-  //           m_frontLeft.getPosition(),
-  //           m_frontRight.getPosition(),
-  //           m_backLeft.getPosition(),
-  //           m_backRight.getPosition()
-  //         });
+  private final SwerveDriveOdometry m_odometry =
+      new SwerveDriveOdometry(
+          m_kinematics,
+          new Rotation2d(getGyroValue()),
+          new SwerveModulePosition[] {
+            m_frontLeft.getPosition(),
+            m_frontRight.getPosition(),
+            m_backLeft.getPosition(),
+            m_backRight.getPosition()
+          });
 
   // public void resteOffsets() {
   //     m_frontLeft.setDesiredState(DriveConstants.startingPositions[0]);
@@ -60,6 +65,20 @@ public class Drivetrain {
 
   public Drivetrain() {
     m_gyro.setYaw(0);
+  }
+
+  public void updateOdometry() {
+    m_odometry.update(new Rotation2d(getGyroValue()), new SwerveModulePosition[] {
+      m_frontLeft.getPosition(),
+      m_frontRight.getPosition(),
+      m_backLeft.getPosition(),
+      m_backRight.getPosition()
+    });
+    // TODO change from null
+    Optional<EstimatedRobotPose> result = camera.getEstimatedGlobalPose(null);
+    if (result.isPresent()) {
+      
+    }
   }
 
   
@@ -103,19 +122,6 @@ public class Drivetrain {
     m_backLeft.setDesiredState(swerveModuleStates[2]);
     m_backRight.setDesiredState(swerveModuleStates[3]);
   }
-
-  /** Updates the field relative position of the robot. */
-  // UPDATE LATER FOR AUTO
-  // public void updateOdometry() {
-  //   m_odometry.update(
-  //       m_gyro.getRotation2d(),
-  //       new SwerveModulePosition[] {
-  //         m_frontLeft.getPosition(),
-  //         m_frontRight.getPosition(),
-  //         m_backLeft.getPosition(),
-  //         m_backRight.getPosition()
-  //       });
-  // }
 
   public void stop() {
     m_frontLeft.stop();
