@@ -47,7 +47,6 @@ public class SwerveModule {
     return m_turningEncoder;
   }
 
-  // Gains are for example purposes only - must be determined for your own robot!
   private final PIDController m_drivePIDController = new PIDController(DriveConstants.drivingP, 0, 0);
 
   private final PIDController m_turningPIDController = new PIDController(DriveConstants.turningP, 0, 0);
