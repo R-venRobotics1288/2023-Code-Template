@@ -63,7 +63,7 @@ public class Drivetrain {
   }
 
   
-  public void robotPeriodic() {
+  public void swerveSmartDashboard() {
     SmartDashboard.putNumber("Front Left Desired Angle", m_frontLeft.targetAngle);
     SmartDashboard.putNumber("Front Right Desired Angle", m_frontRight.targetAngle);
     SmartDashboard.putNumber("Back Left Desired Angle", m_backLeft.targetAngle);
