@@ -35,12 +35,12 @@ public class Robot extends TimedRobot {
 
   @Override
   public void robotPeriodic() {
-    m_swerve.robotPeriodic();
+    // m_swerve.robotPeriodic();
   }
 
   @Override
   public void teleopInit() {
-    m_pneumatics.setStartingState();
+    // m_pneumatics.setStartingState();
   }
   
 
@@ -50,13 +50,7 @@ public class Robot extends TimedRobot {
     SmartDashboard.putNumber("Left Joystick X", m_controller.getLeftX());
     SmartDashboard.putNumber("Left Joystick Y", m_controller.getLeftY());
     SmartDashboard.putNumber("Right Joystick X", m_controller.getRawAxis(2));
-    m_swerve.teleopPeriodic();
-    if (m_controller.getRawButton(7)) {
-      m_swerve.setWheelsToOffset();
-    }
-    if (xBoxController.getXButton()) {
-      m_pneumatics.activate();
-    }
+    m_swerve.swerveSmartDashboard();
   }
 
   private void driveWithJoystick(boolean fieldRelative) {
