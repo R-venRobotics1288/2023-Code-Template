@@ -1,11 +1,8 @@
 package frc.robot; 
 
-import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.math.controller.PIDController;
-
-import javax.swing.text.Position;
 
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.REVLibError;
@@ -13,30 +10,23 @@ import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.revrobotics.RelativeEncoder;
 import frc.robot.Constants.ArmConstants;
 
-import com.ctre.phoenix.motorcontrol.ControlMode;
-import com.ctre.phoenix.motorcontrol.FeedbackDevice;
-import com.ctre.phoenix.motorcontrol.TalonSRXControlMode;
-import com.ctre.phoenix.motorcontrol.can.TalonSRX;
-
-
 public class CraneArm {
-    private XboxController m_Guapo; // switch variable name back to "controller"
     private static final int deviceID = 4;
     private CANSparkMax m_CraneMotor;
     private RelativeEncoder m_CraneEncoder;
 
-    private TalonSRX m_extendingMotor;
-
-    private TalonSRX ClawMotor;
+    private CANSparkMax m_extendingMotor;
 
     public static final double kMaxSpeed = 3.0; // 3 meters per second
     private static final double deadZone = 0.1;
     private double desiredPosition = 0;
+    private XboxController o_controller;
 
     private PIDController m_CranePIDController = new PIDController(ArmConstants.craneP, 0, 0);
     
-    public void init() {
-        TalonSRX m_extendingMotor = new TalonSRX(1);
+    public CraneArm(XboxController o_controller) {
+        this.o_controller = o_controller;
+        CANSparkMax m_extendingMotor = new CANSparkMax(1, MotorType.kBrushless); // TODO CHECK LATER
 
         // initialize SPARK MAX
         m_CraneMotor = new CANSparkMax(deviceID, MotorType.kBrushless);
@@ -52,7 +42,6 @@ public class CraneArm {
         * getEncoder() method from an existing CANSparkMax object
         */
         m_CraneEncoder = m_CraneMotor.getEncoder();
-        m_Guapo = new XboxController(0);
 
         /**
         * Soft Limits restrict the motion of the motor in a particular direction
@@ -89,26 +78,26 @@ public class CraneArm {
         System.out.println("\n**Robot Init**\n");
     }
     
-    public void run() {
+    public void craneRun() {
         // set the motor output based on jostick position
-        // if (m_Guapo.getLeftY() != deadZone) {
-        //     m_CraneMotor.set(m_Guapo.getLeftY());
-        // // }
+        // if (o_controller.getLeftY() != deadZone) {
+        //     m_CraneMotor.set(o_controller.getLeftY());
+        // }
 
         // Ground Position - A
-        if (m_Guapo.getRawButton(2)) {
+        if (o_controller.getRawButton(2)) {
             desiredPosition = ArmConstants.groundPosition;
         }
         // Middle position - X
-        if (m_Guapo.getRawButton(1)) {
+        if (o_controller.getRawButton(1)) {
             desiredPosition = ArmConstants.middlePosition;
         }
         // Human position - B
-        if (m_Guapo.getRawButton(3)) {
+        if (o_controller.getRawButton(3)) {
             desiredPosition = ArmConstants.humanPosition;
         }
         // High position - Y
-        if (m_Guapo.getRawButton(4)) {
+        if (o_controller.getRawButton(4)) {
             desiredPosition = ArmConstants.highPosition;
         }
         
@@ -136,10 +125,10 @@ public class CraneArm {
         // }
 
         // This will be implemented after we get the rotational crane motion working
-        // if (m_Guapo.getRawButton(5)) {
+        // if (o_controller.getRawButton(5)) {
         //     m_extendingMotor.set(ControlMode.Position,-1.0);
         // }
-        // if (m_Guapo.getRawButton(7)) {
+        // if (o_controller.getRawButton(7)) {
         //     m_extendingMotor.set(ControlMode.Position,1.0);
         // }
 

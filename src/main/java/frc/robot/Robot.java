@@ -15,9 +15,13 @@ import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class Robot extends TimedRobot {
-  // private final XboxController m_controller = new XboxController(0);
-  private final XboxController m_controller = new XboxController(1);
+  // private final XboxController d_controller = new XboxController(0);
+  private final XboxController d_controller = new XboxController(1);
+  private final XboxController o_controller = new XboxController(0);
   private final Drivetrain m_swerve = new Drivetrain();
+
+  private final CraneArm m_crane = new CraneArm(o_controller);
+  private final Claw m_claw = new Claw(o_controller);
 
   // Slew rate limiters to make joystick inputs more gentle; 1/3 sec from 0 to 1.
   private final SlewRateLimiter m_xspeedLimiter = new SlewRateLimiter(1.5);
@@ -47,28 +51,34 @@ public class Robot extends TimedRobot {
   @Override
   public void teleopPeriodic() {
     driveWithJoystick(true);
-    SmartDashboard.putNumber("Left Joystick X", m_controller.getLeftX());
-    SmartDashboard.putNumber("Left Joystick Y", m_controller.getLeftY());
-    SmartDashboard.putNumber("Right Joystick X", m_controller.getRawAxis(2));
+    displaySmartDashboard();
+    m_crane.craneRun();
+    m_claw.clawRun();
+  }
+
+  public void displaySmartDashboard() {
+    SmartDashboard.putNumber("Left Joystick X", d_controller.getLeftX());
+    SmartDashboard.putNumber("Left Joystick Y", d_controller.getLeftY());
+    SmartDashboard.putNumber("Right Joystick X", d_controller.getRawAxis(2));
     m_swerve.swerveSmartDashboard();
   }
 
   private void driveWithJoystick(boolean fieldRelative) {
     // Get the x speed. We are inverting this because Xbox controllers return
     // negative values when we push forward.
-    if (m_controller.getRightBumper()) {
+    if (d_controller.getRightBumper()) {
       speedMultiplier = .333;
     } else {
       speedMultiplier = 1.0;
     }
 
     // Not tested yet - 2/21/23
-    if (m_controller.getRawButton(9) && m_controller.getRawButton(10))  {
+    if (d_controller.getRawButton(9) && d_controller.getRawButton(10))  {
       m_swerve.m_gyro.setYaw(0);
     }
 
     final var xSpeed =
-        -m_xspeedLimiter.calculate(MathUtil.applyDeadband(m_controller.getLeftY(), DriveConstants.deadBand))
+        -m_xspeedLimiter.calculate(MathUtil.applyDeadband(d_controller.getLeftY(), DriveConstants.deadBand))
             * Drivetrain.kMaxSpeed * speedMultiplier;
 
     // System.out.println("Begin iteration");
@@ -78,7 +88,7 @@ public class Robot extends TimedRobot {
     // we want a positive value when we pull to the left. Xbox controllers
     // return positive values when you pull to the right by default.
     final var ySpeed =
-        -m_yspeedLimiter.calculate(MathUtil.applyDeadband(m_controller.getLeftX(), DriveConstants.deadBand))
+        -m_yspeedLimiter.calculate(MathUtil.applyDeadband(d_controller.getLeftX(), DriveConstants.deadBand))
             * Drivetrain.kMaxSpeed * speedMultiplier;
 
     // System.out.println("ySpeed: "+ySpeed);
@@ -88,10 +98,10 @@ public class Robot extends TimedRobot {
     // mathematics). Xbox controllers return positive values when you pull to
     // the right by default.
     final var rot =
-        -m_rotLimiter.calculate(MathUtil.applyDeadband(m_controller.getRawAxis(2), DriveConstants.deadBand))
+        -m_rotLimiter.calculate(MathUtil.applyDeadband(d_controller.getRawAxis(2), DriveConstants.deadBand))
             * Drivetrain.kMaxAngularSpeed;
 
-    if (driving && (Math.abs(m_controller.getLeftX()) > DriveConstants.deadBand || Math.abs(m_controller.getLeftY()) > DriveConstants.deadBand || Math.abs(m_controller.getRawAxis(2)) > DriveConstants.deadBand)) {
+    if (driving && (Math.abs(d_controller.getLeftX()) > DriveConstants.deadBand || Math.abs(d_controller.getLeftY()) > DriveConstants.deadBand || Math.abs(d_controller.getRawAxis(2)) > DriveConstants.deadBand)) {
       m_swerve.drive(xSpeed, ySpeed, rot, fieldRelative);
     } else {
       m_swerve.stop();
