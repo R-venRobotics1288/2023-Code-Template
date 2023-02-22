@@ -33,7 +33,7 @@ public class CraneArm {
     private static final double deadZone = 0.1;
     private double desiredPosition = 0;
 
-    private PIDController m_CranePIDController = new PIDController(0.25, 0, 0);
+    private PIDController m_CranePIDController = new PIDController(ArmConstants.craneP, 0, 0);
     
     public void init() {
         TalonSRX m_extendingMotor = new TalonSRX(1);

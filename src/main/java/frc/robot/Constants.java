@@ -14,6 +14,9 @@ public class Constants {
             -2.428286679089069
         };
 
+        public static final double turningP = 0.6;
+        public static final double drivingP = 0.25;
+
         public static final double deadBand = 0.15;
 
         public static final double neoTurningGearRatio = 12.8;
@@ -33,6 +36,6 @@ public class Constants {
 
         public static final int deadband = 3;
 
-        public static final double speed = .3;
+        public static final double craneP = 0.01;
     }
 }
