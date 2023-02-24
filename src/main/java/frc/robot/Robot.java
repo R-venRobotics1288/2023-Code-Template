@@ -18,6 +18,7 @@ public class Robot extends TimedRobot {
   // private final XboxController m_controller = new XboxController(0);
   private final XboxController m_controller = new XboxController(1);
   private final Drivetrain m_swerve = new Drivetrain();
+  private final Auto auto = new Auto();
 
   // Slew rate limiters to make joystick inputs more gentle; 1/3 sec from 0 to 1.
   private final SlewRateLimiter m_xspeedLimiter = new SlewRateLimiter(1.5);
@@ -30,6 +31,7 @@ public class Robot extends TimedRobot {
   @Override
   public void autonomousPeriodic() {
     driveWithJoystick(true);
+    auto.plan1A();
     // m_swerve.updateOdometry();
   }
 
