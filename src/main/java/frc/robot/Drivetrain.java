@@ -5,6 +5,8 @@
 package frc.robot;
 
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
@@ -48,16 +50,27 @@ public class Drivetrain {
       new SwerveDriveKinematics(
           m_frontLeftLocation, m_frontRightLocation, m_backLeftLocation, m_backRightLocation);
 
-  private final SwerveDriveOdometry m_odometry =
-      new SwerveDriveOdometry(
-          m_kinematics,
-          new Rotation2d(getGyroValue()),
-          new SwerveModulePosition[] {
-            m_frontLeft.getPosition(),
-            m_frontRight.getPosition(),
-            m_backLeft.getPosition(),
-            m_backRight.getPosition()
-          });
+  // private final SwerveDriveOdometry m_odometry =
+  //     new SwerveDriveOdometry(
+  //         m_kinematics,
+  //         new Rotation2d(getGyroValue()),
+  //         new SwerveModulePosition[] {
+  //           m_frontLeft.getPosition(),
+  //           m_frontRight.getPosition(),
+  //           m_backLeft.getPosition(),
+  //           m_backRight.getPosition()
+  //         });
+  private final SwerveDrivePoseEstimator m_odometry = 
+        new SwerveDrivePoseEstimator(
+        m_kinematics,
+        new Rotation2d(getGyroValue()),
+        new SwerveModulePosition[] {
+          m_frontLeft.getPosition(),
+          m_frontRight.getPosition(),
+          m_backLeft.getPosition(),
+          m_backRight.getPosition()
+        },
+        new Pose2d());
 
   // public void resteOffsets() {
   //     m_frontLeft.setDesiredState(DriveConstants.startingPositions[0]);
@@ -77,7 +90,8 @@ public class Drivetrain {
     // TODO change from null
     Optional<EstimatedRobotPose> result = camera.getEstimatedGlobalPose(null);
     if (result.isPresent()) {
-      
+      EstimatedRobotPose camPos = result.get();
+      m_odometry.addVisionMeasurement(camPos.estimatedPose.toPose2d(), camPos.timestampSeconds);
     }
   }
 
@@ -92,7 +106,9 @@ public class Drivetrain {
     SmartDashboard.putNumber("Back Left Abs Encoder Postion", m_backLeft.getAbsoluteEncoderRad());
     SmartDashboard.putNumber("Back Right Abs Encoder Postion", m_backRight.getAbsoluteEncoderRad());
     SmartDashboard.putNumber("Gyro Yaw Value", getGyroValue());
-
+    SmartDashboard.putNumber("Odometry X", m_odometry.getEstimatedPosition().getX());
+    SmartDashboard.putNumber("Odometry X", m_odometry.getEstimatedPosition().getY());
+    SmartDashboard.putNumber("Odometry Rot", m_odometry.getEstimatedPosition().getRotation().getRadians());
   }
 
   public void robotInit() {

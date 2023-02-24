@@ -30,6 +30,7 @@ public class Robot extends TimedRobot {
   @Override
   public void autonomousPeriodic() {
     m_swerve.updateOdometry();
+    m_swerve.swerveSmartDashboard();
   }
 
   @Override
