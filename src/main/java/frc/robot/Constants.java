@@ -37,5 +37,16 @@ public class Constants {
         public static final int deadband = 3;
 
         public static final double craneP = 0.01;
+        
+        // TODO Change Limits
+        public static final double extensionLimit = 9.0;
+        public static final double retractionLimit = 10.0;
+
+        public static final double extensionP = 0.01;
+
+        public static final double extendGround = 8.7;
+        public static final double extendMiddle = 9.89;
+        public static final double extendHigh = 8.0;
+        public static final double extendHuman = 9.0;
     }
 }

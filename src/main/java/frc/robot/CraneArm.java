@@ -5,17 +5,18 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.math.controller.PIDController;
 
 import com.revrobotics.CANSparkMax;
-import com.revrobotics.REVLibError;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.revrobotics.RelativeEncoder;
+
 import frc.robot.Constants.ArmConstants;
 
 public class CraneArm {
     private static final int deviceID = 4;
     private CANSparkMax m_CraneMotor;
     private RelativeEncoder m_CraneEncoder;
+    private ExtensionArm m_extension;
 
-    private CANSparkMax m_extendingMotor;
+    
 
     public static final double kMaxSpeed = 3.0; // 3 meters per second
     private static final double deadZone = 0.1;
@@ -26,7 +27,9 @@ public class CraneArm {
     
     public CraneArm(XboxController o_controller) {
         this.o_controller = o_controller;
-        CANSparkMax m_extendingMotor = new CANSparkMax(1, MotorType.kBrushless); // TODO CHECK LATER
+        m_extension = new ExtensionArm(o_controller);
+
+        
 
         // initialize SPARK MAX
         m_CraneMotor = new CANSparkMax(deviceID, MotorType.kBrushless);
@@ -87,19 +90,25 @@ public class CraneArm {
         // Ground Position - A
         if (o_controller.getRawButton(2)) {
             desiredPosition = ArmConstants.groundPosition;
+            m_extension.buttonExtension("ground");
         }
         // Middle position - X
         if (o_controller.getRawButton(1)) {
             desiredPosition = ArmConstants.middlePosition;
+            m_extension.buttonExtension("middle");
         }
         // Human position - B
         if (o_controller.getRawButton(3)) {
             desiredPosition = ArmConstants.humanPosition;
+            m_extension.buttonExtension("human");
         }
         // High position - Y
         if (o_controller.getRawButton(4)) {
             desiredPosition = ArmConstants.highPosition;
+            m_extension.buttonExtension("high");
         }
+        m_extension.extendRun();
+
         
         final double craneOutput = m_CranePIDController.calculate(m_CraneEncoder.getPosition(), desiredPosition);
         m_CraneMotor.set(craneOutput);
