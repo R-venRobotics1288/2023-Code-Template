@@ -22,12 +22,16 @@ public class Drivetrain {
   public static final double kMaxSpeed = 3.0; // 3 meters per second
   public static final double kMaxAngularSpeed = Math.PI; // 1/2 rotation per second
 
-  private final Translation2d m_frontLeftLocation = new Translation2d(DriveConstants.robotLength / 2, DriveConstants.robotWidth / 2);
-  private final Translation2d m_frontRightLocation = new Translation2d(DriveConstants.robotLength / 2, -DriveConstants.robotWidth / 2);
-  private final Translation2d m_backLeftLocation = new Translation2d(-DriveConstants.robotLength / 2, DriveConstants.robotWidth / 2);
-  private final Translation2d m_backRightLocation = new Translation2d(-DriveConstants.robotLength / 2, -DriveConstants.robotWidth / 2);
+  private final Translation2d m_frontLeftLocation = new Translation2d(DriveConstants.robotLength / 2,
+      DriveConstants.robotWidth / 2);
+  private final Translation2d m_frontRightLocation = new Translation2d(DriveConstants.robotLength / 2,
+      -DriveConstants.robotWidth / 2);
+  private final Translation2d m_backLeftLocation = new Translation2d(-DriveConstants.robotLength / 2,
+      DriveConstants.robotWidth / 2);
+  private final Translation2d m_backRightLocation = new Translation2d(-DriveConstants.robotLength / 2,
+      -DriveConstants.robotWidth / 2);
 
-    //CHANGE ENCODER PORTS
+  // CHANGE ENCODER PORTS
   private final SwerveModule m_frontLeft = new SwerveModule(1, 10, 20, DriveConstants.startingPositions[0]);
   private final SwerveModule m_frontRight = new SwerveModule(8, 2, 21, DriveConstants.startingPositions[1]);
   private final SwerveModule m_backLeft = new SwerveModule(7, 6, 22, DriveConstants.startingPositions[2]);
@@ -39,30 +43,31 @@ public class Drivetrain {
     return m_gyro.getYaw() * Math.PI / 180;
   }
 
-  private final SwerveDriveKinematics m_kinematics =
-      new SwerveDriveKinematics(
-          m_frontLeftLocation, m_frontRightLocation, m_backLeftLocation, m_backRightLocation);
+  private Rotation2d getGyroRotation2d() {
+    return new Rotation2d(getGyroValue());
+  }
 
-  // private final SwerveDriveOdometry m_odometry =
-  //     new SwerveDriveOdometry(
-  //         m_kinematics,
-  //         m_gyro.getRotation2d(),
-  //         new SwerveModulePosition[] {
-  //           m_frontLeft.getPosition(),
-  //           m_frontRight.getPosition(),
-  //           m_backLeft.getPosition(),
-  //           m_backRight.getPosition()
-  //         });
+  private final SwerveDriveKinematics m_kinematics = new SwerveDriveKinematics(
+      m_frontLeftLocation, m_frontRightLocation, m_backLeftLocation, m_backRightLocation);
+
+  private final SwerveDriveOdometry m_odometry = new SwerveDriveOdometry(
+      m_kinematics,
+      getGyroRotation2d(),
+      new SwerveModulePosition[] {
+          m_frontLeft.getPosition(),
+          m_frontRight.getPosition(),
+          m_backLeft.getPosition(),
+          m_backRight.getPosition()
+      });
 
   // public void resteOffsets() {
-  //     m_frontLeft.setDesiredState(DriveConstants.startingPositions[0]);
+  // m_frontLeft.setDesiredState(DriveConstants.startingPositions[0]);
   // }
 
   public Drivetrain() {
     m_gyro.setYaw(0);
   }
 
-  
   public void swerveSmartDashboard() {
     SmartDashboard.putNumber("Front Left Desired Angle", m_frontLeft.targetAngle);
     SmartDashboard.putNumber("Front Right Desired Angle", m_frontRight.targetAngle);
@@ -82,21 +87,20 @@ public class Drivetrain {
     SmartDashboard.putNumber("Front Left Encoder Offset", m_frontLeft.absoluteEncoderOffset);
   }
 
-
   /**
    * Method to drive the robot using joystick info.
    *
-   * @param xSpeed Speed of the robot in the x direction (forward).
-   * @param ySpeed Speed of the robot in the y direction (sideways).
-   * @param rot Angular rate of the robot.
-   * @param fieldRelative Whether the provided x and y speeds are relative to the field.
+   * @param xSpeed        Speed of the robot in the x direction (forward).
+   * @param ySpeed        Speed of the robot in the y direction (sideways).
+   * @param rot           Angular rate of the robot.
+   * @param fieldRelative Whether the provided x and y speeds are relative to the
+   *                      field.
    */
   public void drive(double xSpeed, double ySpeed, double rot, boolean fieldRelative) {
-    final SwerveModuleState[] swerveModuleStates =
-        m_kinematics.toSwerveModuleStates(
-            fieldRelative
-                ? ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, rot, new Rotation2d(getGyroValue()))
-                : new ChassisSpeeds(xSpeed, ySpeed, rot));
+    final SwerveModuleState[] swerveModuleStates = m_kinematics.toSwerveModuleStates(
+        fieldRelative
+            ? ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, rot, new Rotation2d(getGyroValue()))
+            : new ChassisSpeeds(xSpeed, ySpeed, rot));
     SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleStates, kMaxSpeed);
     m_frontLeft.setDesiredState(swerveModuleStates[0]);
     m_frontRight.setDesiredState(swerveModuleStates[1]);
@@ -106,16 +110,16 @@ public class Drivetrain {
 
   /** Updates the field relative position of the robot. */
   // UPDATE LATER FOR AUTO
-  // public void updateOdometry() {
-  //   m_odometry.update(
-  //       m_gyro.getRotation2d(),
-  //       new SwerveModulePosition[] {
-  //         m_frontLeft.getPosition(),
-  //         m_frontRight.getPosition(),
-  //         m_backLeft.getPosition(),
-  //         m_backRight.getPosition()
-  //       });
-  // }
+  public void updateOdometry() {
+    m_odometry.update(
+        getGyroRotation2d(),
+        new SwerveModulePosition[] {
+            m_frontLeft.getPosition(),
+            m_frontRight.getPosition(),
+            m_backLeft.getPosition(),
+            m_backRight.getPosition()
+        });
+  }
 
   public void stop() {
     m_frontLeft.stop();
@@ -129,5 +133,14 @@ public class Drivetrain {
     m_frontRight.setStateToOffset();
     m_backLeft.setStateToOffset();
     m_backRight.setStateToOffset();
+  }
+
+  public void driveToPosition(double targetX, double targetY) {
+    double currentX = m_odometry.getPoseMeters().getTranslation().getX();
+    double currentY = m_odometry.getPoseMeters().getTranslation().getY();
+    double distToTarget = Math.sqrt(Math.pow(targetX - currentX, 2) + Math.pow(targetY - currentY, 2));
+    // This will be sent to the module drive pid to the target position
+    double  targetAngle = Math.toRadians(Math.atan2(Math.toDegrees(targetY) - Math.toDegrees(currentY),
+        Math.toDegrees(targetX) - Math.toDegrees(currentX)));
   }
 }

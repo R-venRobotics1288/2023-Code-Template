@@ -98,11 +98,9 @@ public class SwerveModule {
     config.absoluteSensorRange = AbsoluteSensorRange.Signed_PlusMinus180;
 
     config.initializationStrategy = SensorInitializationStrategy.BootToAbsolutePosition;
-    // m_absoluteEncoder.setPositionToAbsolute();
-    // m_absoluteEncoder.configSensorInitializationStrategy(SensorInitializationStrategy.BootToAbsolutePosition);
     m_absoluteEncoder.configAllSettings(config);
 
-    m_driveEncoder.setPositionConversionFactor(2 * Math.PI * kWheelRadius / kEncoderResolution);
+    m_driveEncoder.setPositionConversionFactor(2 * Math.PI * kWheelRadius);
     m_turningEncoder.setPositionConversionFactor(12.8 * Math.PI * 2);
 
     // Limit the PID Controller's input range between -pi and pi and set the input
