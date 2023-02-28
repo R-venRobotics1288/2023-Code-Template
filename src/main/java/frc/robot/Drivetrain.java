@@ -87,8 +87,7 @@ public class Drivetrain {
       m_backLeft.getPosition(),
       m_backRight.getPosition()
     });
-    // TODO change from null
-    Optional<EstimatedRobotPose> result = camera.getEstimatedGlobalPose(null);
+    Optional<EstimatedRobotPose> result = camera.getEstimatedGlobalPose(m_odometry.getEstimatedPosition());
     if (result.isPresent()) {
       EstimatedRobotPose camPos = result.get();
       m_odometry.addVisionMeasurement(camPos.estimatedPose.toPose2d(), camPos.timestampSeconds);
