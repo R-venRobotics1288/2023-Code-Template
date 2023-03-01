@@ -27,7 +27,7 @@ public class CraneArm {
     
     public CraneArm(XboxController o_controller) {
         this.o_controller = o_controller;
-        m_extension = new ExtensionArm(o_controller);
+        // m_extension = new ExtensionArm(o_controller);
 
         
 
@@ -90,24 +90,24 @@ public class CraneArm {
         // Ground Position - A
         if (o_controller.getRawButton(2)) {
             desiredPosition = ArmConstants.groundPosition;
-            m_extension.buttonExtension("ground");
+            // m_extension.buttonExtension("ground");
         }
         // Middle position - X
         if (o_controller.getRawButton(1)) {
             desiredPosition = ArmConstants.middlePosition;
-            m_extension.buttonExtension("middle");
+            // m_extension.buttonExtension("middle");
         }
         // Human position - B
         if (o_controller.getRawButton(3)) {
             desiredPosition = ArmConstants.humanPosition;
-            m_extension.buttonExtension("human");
+            // m_extension.buttonExtension("human");
         }
         // High position - Y
         if (o_controller.getRawButton(4)) {
             desiredPosition = ArmConstants.highPosition;
-            m_extension.buttonExtension("high");
+            // m_extension.buttonExtension("high");
         }
-        m_extension.extendRun();
+        // m_extension.extendRun();
 
         
         final double craneOutput = m_CranePIDController.calculate(m_CraneEncoder.getPosition(), desiredPosition);

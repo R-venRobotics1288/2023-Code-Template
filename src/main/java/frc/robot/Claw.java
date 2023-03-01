@@ -10,7 +10,7 @@ public class Claw {
 
     public Claw(XboxController o_controller) {
         this.o_controller = o_controller;
-        clawMotor = new CANSparkMax(0, MotorType.kBrushless); // TODO CHECK CLAW ID
+        clawMotor = new CANSparkMax(11, MotorType.kBrushless); // TODO CHECK CLAW ID
     }
 
     public void clawRun() {

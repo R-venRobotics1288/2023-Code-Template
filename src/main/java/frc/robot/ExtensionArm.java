@@ -21,7 +21,7 @@ public class ExtensionArm {
 
     public ExtensionArm(XboxController o_controller) {
         this.o_controller = o_controller;
-        m_extendingMotor = new CANSparkMax(6, MotorType.kBrushless); // TODO Change ID
+        m_extendingMotor = new CANSparkMax(5, MotorType.kBrushless); // TODO Change ID
         m_extendEncoder = m_extendingMotor.getEncoder();
     }
 
@@ -29,7 +29,7 @@ public class ExtensionArm {
     public void extendRun() {
         // Left Bumper - 5 - Arm Retraction
         if (o_controller.getRawButton(5)) {
-            if (m_extendEncoder.getPosition() != ArmConstants.retractionLimit) {
+            if (m_extendEncoder.getPosition() <= ArmConstants.retractionLimit) {
                 m_extendingMotor.set(-1);
             } 
             else {
@@ -38,13 +38,14 @@ public class ExtensionArm {
         }
         // Left Trigger - 7 - Arm Extenison
         if (o_controller.getRawButton(7)) {
-            if (m_extendEncoder.getPosition() != ArmConstants.extensionLimit) {
+            if (m_extendEncoder.getPosition() <= ArmConstants.extensionLimit) {
                 m_extendingMotor.set(1);
             }
             else {
                 m_extendingMotor.set(0);
             }
         }
+
         SmartDashboard.putNumber("Extension Encoder", m_extendEncoder.getPosition());
         SmartDashboard.putNumber("Extension Desired Position", extensionDesiredPosition);
 
