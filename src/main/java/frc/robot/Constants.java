@@ -31,7 +31,7 @@ public class Constants {
 
         public static final double groundPosition = 16.6;
         public static final double middlePosition = 34.9;
-        public static final double highPosition = 55.1;
+        public static final double highPosition = 100.1;
         public static final double humanPosition = 47.0;
 
         public static final int deadband = 3;

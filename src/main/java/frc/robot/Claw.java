@@ -16,10 +16,10 @@ public class Claw {
     public void clawRun() {
         // * Intake - SUBJECT TO CHANGE
         if (o_controller.getRawButton(8)) {
-            clawMotor.set(1);
+            clawMotor.set(.5);
             // * Outtake - SUBJECT TO CHANGE
         } else if (o_controller.getRawButton(6)) {
-            clawMotor.set(-1);
+            clawMotor.set(-.5);
         } else {
             clawMotor.set(0);
         }
