@@ -1,5 +1,7 @@
 package frc.robot;
 
+import javax.print.attribute.standard.Destination;
+
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.revrobotics.RelativeEncoder;
@@ -46,10 +48,15 @@ public class ExtensionArm {
             }
         }
 
-        SmartDashboard.putNumber("Extension Encoder", m_extendEncoder.getPosition());
-        SmartDashboard.putNumber("Extension Desired Position", extensionDesiredPosition);
+
+        // SmartDashboard.putNumber("Extension Encoder", m_extendEncoder.getPosition());
+        // SmartDashboard.putNumber("Extension Desired Position", extensionDesiredPosition);
 
 
+    }
+
+    public double extenisonEncoder() {
+        return m_extendEncoder.getPosition();
     }
 
     public void buttonExtension(String position) {
@@ -64,6 +71,9 @@ public class ExtensionArm {
         }
         if (position.equals("high")) {
             extensionDesiredPosition = ArmConstants.extendHigh;
+        }
+        if (extensionDesiredPosition > -5) {
+            extensionDesiredPosition = -5;
         }
         final double extensionOutput = m_ExtensionPIDController.calculate(m_extendEncoder.getPosition(), extensionDesiredPosition);
         m_extendingMotor.set(extensionOutput);

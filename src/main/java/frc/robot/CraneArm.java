@@ -15,6 +15,7 @@ public class CraneArm {
     private CANSparkMax m_CraneMotor;
     private RelativeEncoder m_CraneEncoder;
     private ExtensionArm m_extension;
+    private String extensionPosition;
 
     
 
@@ -23,11 +24,12 @@ public class CraneArm {
     private double desiredPosition = 0;
     private XboxController o_controller;
 
-    private PIDController m_CranePIDController = new PIDController(ArmConstants.craneP, 0, 0);
+    private PIDController m_CraneUpPIDController = new PIDController(ArmConstants.craneUpP, 0, 0);
+    private PIDController m_CraneDownPIDController = new PIDController(ArmConstants.craneDownP, 0, 0);
     
     public CraneArm(XboxController o_controller) {
         this.o_controller = o_controller;
-        // m_extension = new ExtensionArm(o_controller);
+        m_extension = new ExtensionArm(o_controller);
 
         
 
@@ -73,6 +75,7 @@ public class CraneArm {
                               m_CraneMotor.getSoftLimit(CANSparkMax.SoftLimitDirection.kForward));
         SmartDashboard.putNumber("Reverse Soft Limit",
                               m_CraneMotor.getSoftLimit(CANSparkMax.SoftLimitDirection.kReverse));
+
     }
 
     public void setZero() {
@@ -80,12 +83,24 @@ public class CraneArm {
        // desiredPosition = 0;
         System.out.println("\n**Robot Init**\n");
     }
+
+    public double encoderPosition() {
+        return m_CraneEncoder.getPosition();
+    }
+
+    public double extenisonEncoder() {
+        return m_extension.extenisonEncoder();
+    }
+
     
     public void craneRun() {
         // set the motor output based on jostick position
         // if (o_controller.getLeftY() != deadZone) {
         //     m_CraneMotor.set(o_controller.getLeftY());
         // }
+        if (o_controller.getRawButton(9)) {
+            desiredPosition = ArmConstants.driveLimit;
+        }
 
         // Ground Position - A
         if (o_controller.getRawButton(2)) {
@@ -95,7 +110,8 @@ public class CraneArm {
         // Middle position - X
         if (o_controller.getRawButton(1)) {
             desiredPosition = ArmConstants.middlePosition;
-            // m_extension.buttonExtension("middle");
+            extensionPosition = "middle";
+            m_extension.buttonExtension(extensionPosition);
         }
         // Human position - B
         if (o_controller.getRawButton(3)) {
@@ -107,10 +123,25 @@ public class CraneArm {
             desiredPosition = ArmConstants.highPosition;
             // m_extension.buttonExtension("high");
         }
-        // m_extension.extendRun();
-
+        // if (o_controller.getLeftX() > 0.3) {
+        //     desiredPosition += .5;
+        // }
+        // if (o_controller.getLeftX() < .3) {
+        //     desiredPosition -= .5;
+        // }
+        if (desiredPosition < ArmConstants.armDownHardLimit) {
+            desiredPosition = ArmConstants.armDownHardLimit;
+        }
+        desiredPosition = ArmConstants.middlePosition;
+        m_extension.extendRun();
+        m_extension.buttonExtension(extensionPosition);
         
-        final double craneOutput = m_CranePIDController.calculate(m_CraneEncoder.getPosition(), desiredPosition);
+      
+      
+        double craneOutput = m_CraneUpPIDController.calculate(m_CraneEncoder.getPosition(), desiredPosition);
+        if (craneOutput < 0) {
+            craneOutput = m_CraneDownPIDController.calculate(m_CraneEncoder.getPosition(), desiredPosition);
+        }
         m_CraneMotor.set(craneOutput);
 
         // For testing purposes
@@ -150,6 +181,7 @@ public class CraneArm {
         */
         SmartDashboard.putNumber("Encoder Position", m_CraneEncoder.getPosition());
 
+        
         /**
         * Encoder velocity is read from a RelativeEncoder object by calling the
          * GetVelocity() method.

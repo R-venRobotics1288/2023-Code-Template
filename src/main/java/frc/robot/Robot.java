@@ -28,7 +28,7 @@ public class Robot extends TimedRobot {
   private final SlewRateLimiter m_yspeedLimiter = new SlewRateLimiter(1.5);
   private final SlewRateLimiter m_rotLimiter = new SlewRateLimiter(3);
   private boolean driving = true;
-  private double speedMultiplier = 1.0; // For speed controll via button press
+  private double speedMultiplier = 1.0; // For speed control via button press
   // private final Pneumatics m_pneumatics = new Pneumatics();
 
   @Override
@@ -40,6 +40,8 @@ public class Robot extends TimedRobot {
   @Override
   public void robotPeriodic() {
     // m_swerve.robotPeriodic();
+    SmartDashboard.putNumber("Arm up/down Encoder", m_crane.encoderPosition());
+    SmartDashboard.putNumber("Extension Encoder", m_crane.extenisonEncoder());
   }
 
   @Override
