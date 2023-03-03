@@ -132,7 +132,7 @@ public class CraneArm {
             desiredPosition = ArmConstants.armDownHardLimit;
         }
         desiredPosition = ArmConstants.middlePosition;
-        m_extension.extendRun();
+        // m_extension.extendRun();
         m_extension.buttonExtension(extensionPosition);
         
       
