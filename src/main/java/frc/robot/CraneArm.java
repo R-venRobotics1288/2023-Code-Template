@@ -111,7 +111,6 @@ public class CraneArm {
         if (o_controller.getRawButton(1)) {
             desiredPosition = ArmConstants.middlePosition;
             extensionPosition = "middle";
-            m_extension.buttonExtension(extensionPosition);
         }
         // Human position - B
         if (o_controller.getRawButton(3)) {
