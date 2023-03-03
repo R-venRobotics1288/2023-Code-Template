@@ -105,7 +105,7 @@ public class CraneArm {
         // Ground Position - A
         if (o_controller.getRawButton(2)) {
             desiredPosition = ArmConstants.groundPosition;
-            // m_extension.buttonExtension("ground");
+            extensionPosition = "ground";
         }
         // Middle position - X
         if (o_controller.getRawButton(1)) {
@@ -115,12 +115,12 @@ public class CraneArm {
         // Human position - B
         if (o_controller.getRawButton(3)) {
             desiredPosition = ArmConstants.humanPosition;
-            // m_extension.buttonExtension("human");
+            extensionPosition = "human";
         }
         // High position - Y
         if (o_controller.getRawButton(4)) {
             desiredPosition = ArmConstants.highPosition;
-            // m_extension.buttonExtension("high");
+            extensionPosition = "high";
         }
         // if (o_controller.getLeftX() > 0.3) {
         //     desiredPosition += .5;

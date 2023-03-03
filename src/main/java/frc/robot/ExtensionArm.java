@@ -17,7 +17,7 @@ public class ExtensionArm {
     private CANSparkMax m_extendingMotor;
     private RelativeEncoder m_extendEncoder;
     private XboxController o_controller;
-    private static double extensionDesiredPosition = 0.0;
+    private double extensionDesiredPosition = -5;
 
     private PIDController m_ExtensionPIDController = new PIDController(ArmConstants.extensionP, 0 ,0);
 
