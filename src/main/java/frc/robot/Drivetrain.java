@@ -40,6 +40,7 @@ public class Drivetrain {
   private final SwerveModule m_backRight = new SwerveModule(3, 9, 23, DriveConstants.startingPositions[3]);
 
   public final PigeonIMU m_gyro = new PigeonIMU(30);
+  public Camera camera;
 
   private double getGyroValue() {
     return m_gyro.getYaw() * Math.PI / 180;
@@ -77,7 +78,7 @@ public class Drivetrain {
   // }
 
   public void initCamera() {
-
+    camera = new Camera("raven1288");
   }
 
   public void updateOdometry() {
