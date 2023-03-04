@@ -10,36 +10,27 @@ public class Auto {
      * charging station, out of the community, and then back on the charging
      * station.
      */
-    public void plan1A() {
+    public void plan1() {
         // Place the cone in the grid
-
+        placeCone();
         // Drive forward until the gyro goes positive, negative, then levels out
 
         // Drive backwards until the gyro goes negative
-
-        // Start attempting to balance.
-    }
-
-    /**
-     * This plan places a cube in the grid, then goes over the
-     * charging station, out of the community, and then back on the charging
-     * station.
-     */
-    public void plan1B() {
-        // Place the cone in the grid
-
-        // Drive forward until the gyro goes positive, negative, then levels out
-
-        // Drive backwards until the gyro goes negative
-
+        
         // Start attempting to balance.
     }
 
     /**
      * Place object then move robot to middle
      */
-    public void plan2() {
+    public double plan2() {
+        // Left Or Right placement of the robot
 
+        // Place a cone
+        placeCone();
+        // Drive Backwards
+        
+        return 1.0;
     }
 
     /**
@@ -47,17 +38,6 @@ public class Auto {
      */
     public void placeCone() {
         // Align the robot with the target peg using the reflective sensor output
-
-        // Adjust the arm extension and position to the highest peg
-
-        // Drop the cone on the peg
-    }
-
-    /**
-     * Places the cube on the grid.
-     */
-    public void placeCube() {
-        // Align the robot with the target platform using the camera output (April Tags)
 
         // Adjust the arm extension and position to the highest peg
 

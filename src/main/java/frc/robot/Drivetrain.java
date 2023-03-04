@@ -43,16 +43,16 @@ public class Drivetrain {
       new SwerveDriveKinematics(
           m_frontLeftLocation, m_frontRightLocation, m_backLeftLocation, m_backRightLocation);
 
-  // private final SwerveDriveOdometry m_odometry =
-  //     new SwerveDriveOdometry(
-  //         m_kinematics,
-  //         m_gyro.getRotation2d(),
-  //         new SwerveModulePosition[] {
-  //           m_frontLeft.getPosition(),
-  //           m_frontRight.getPosition(),
-  //           m_backLeft.getPosition(),
-  //           m_backRight.getPosition()
-  //         });
+  private final SwerveDriveOdometry m_odometry =
+      new SwerveDriveOdometry(
+          m_kinematics,
+          new Rotation2d(getGyroValue()),
+          new SwerveModulePosition[] {
+            m_frontLeft.getPosition(),
+            m_frontRight.getPosition(),
+            m_backLeft.getPosition(),
+            m_backRight.getPosition()
+          });
 
   // public void resteOffsets() {
   //     m_frontLeft.setDesiredState(DriveConstants.startingPositions[0]);
@@ -106,16 +106,16 @@ public class Drivetrain {
 
   /** Updates the field relative position of the robot. */
   // UPDATE LATER FOR AUTO
-  // public void updateOdometry() {
-  //   m_odometry.update(
-  //       m_gyro.getRotation2d(),
-  //       new SwerveModulePosition[] {
-  //         m_frontLeft.getPosition(),
-  //         m_frontRight.getPosition(),
-  //         m_backLeft.getPosition(),
-  //         m_backRight.getPosition()
-  //       });
-  // }
+  public void updateOdometry() {
+    m_odometry.update(
+        new Rotation2d(getGyroValue()),
+        new SwerveModulePosition[] {
+          m_frontLeft.getPosition(),
+          m_frontRight.getPosition(),
+          m_backLeft.getPosition(),
+          m_backRight.getPosition()
+        });
+  }
 
   public void stop() {
     m_frontLeft.stop();

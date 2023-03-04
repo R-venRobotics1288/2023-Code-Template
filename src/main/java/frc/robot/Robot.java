@@ -30,9 +30,8 @@ public class Robot extends TimedRobot {
 
   @Override
   public void autonomousPeriodic() {
-    driveWithJoystick(true);
-    auto.plan1A();
-    // m_swerve.updateOdometry();
+    driveAutonomously(-1.0,true);
+    m_swerve.updateOdometry();
   }
 
   @Override
@@ -105,5 +104,17 @@ public class Robot extends TimedRobot {
       m_swerve.stop();
     }
    
+  }
+
+  public void driveAutonomously(double backMotion, boolean fieldRelative) {
+    // final double xSpeed =
+    //     -m_xspeedLimiter.calculate(backMotion) * Drivetrain.kMaxSpeed;
+    final double ySpeed =
+        -m_yspeedLimiter.calculate(backMotion) * Drivetrain.kMaxSpeed;
+    if (driving) {
+      m_swerve.drive(0, ySpeed, 0, fieldRelative);
+    } else {
+      m_swerve.stop();
+    }
   }
 }
