@@ -42,6 +42,7 @@ public class Robot extends TimedRobot {
     // m_swerve.robotPeriodic();
     SmartDashboard.putNumber("Arm up/down Encoder", m_crane.encoderPosition());
     SmartDashboard.putNumber("Extension Encoder", m_crane.extenisonEncoder());
+
   }
 
   @Override
@@ -53,6 +54,7 @@ public class Robot extends TimedRobot {
   @Override
   public void teleopPeriodic() {
     driveWithJoystick(true);
+
     displaySmartDashboard();
     m_crane.craneRun();
     m_claw.clawRun();
