@@ -16,6 +16,10 @@ import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants.DriveConstants;
 
+import java.util.Optional;
+
+import org.photonvision.EstimatedRobotPose;
+
 // import edu.wpi.first.wpilibj.AnalogGyro;
 import com.ctre.phoenix.sensors.PigeonIMU;
 
@@ -72,6 +76,24 @@ public class Drivetrain {
   //     m_frontLeft.setDesiredState(DriveConstants.startingPositions[0]);
   // }
 
+  public void initCamera() {
+
+  }
+
+  public void updateOdometry() {
+    m_odometry.update(new Rotation2d(getGyroValue()), new SwerveModulePosition[] {
+      m_frontLeft.getPosition(),
+      m_frontRight.getPosition(),
+      m_backLeft.getPosition(),
+      m_backRight.getPosition()
+    });
+    Optional<EstimatedRobotPose> result = camera.getEstimatedGlobalPose(m_odometry.getEstimatedPosition());
+    if (result.isPresent()) {
+      EstimatedRobotPose camPos = result.get();
+      m_odometry.addVisionMeasurement(camPos.estimatedPose.toPose2d(), camPos.timestampSeconds);
+    }
+  }
+
   public Drivetrain() {
     m_gyro.setYaw(0);
   }
@@ -87,7 +109,6 @@ public class Drivetrain {
     SmartDashboard.putNumber("Back Left Abs Encoder Postion", m_backLeft.getAbsoluteEncoderRad());
     SmartDashboard.putNumber("Back Right Abs Encoder Postion", m_backRight.getAbsoluteEncoderRad());
     SmartDashboard.putNumber("Gyro Yaw Value", getGyroValue());
-
   }
 
   public void robotInit() {
