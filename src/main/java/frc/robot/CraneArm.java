@@ -17,10 +17,8 @@ public class CraneArm {
     private ExtensionArm m_extension;
     private String extensionPosition;
 
-    
-
     public static final double kMaxSpeed = 3.0; // 3 meters per second
-    private static final double deadZone = 0.1;
+
     private double desiredPosition = 0;
     private XboxController o_controller;
 
