@@ -11,6 +11,8 @@ public class Claw {
     public Claw(XboxController o_controller) {
         this.o_controller = o_controller;
         clawMotor = new CANSparkMax(11, MotorType.kBrushless);
+        clawMotor.setSmartCurrentLimit(80);
+        clawMotor.burnFlash();
     }
 
     public void clawRun() {
@@ -21,7 +23,7 @@ public class Claw {
             // * Outtake - SUBJECT TO CHANGE
         } else if (o_controller.getRawButton(6)) {
             System.out.println("Outtake");
-            clawMotor.set(-.5);
+            clawMotor.set(-.15); //TODO Fix claw speeds
         } else {
             System.out.println("Stop");
             clawMotor.set(0);

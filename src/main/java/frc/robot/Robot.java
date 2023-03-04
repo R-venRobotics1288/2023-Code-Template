@@ -41,6 +41,9 @@ public class Robot extends TimedRobot {
     // m_swerve.robotPeriodic();
     SmartDashboard.putNumber("Arm up/down Encoder", m_crane.encoderPosition());
     SmartDashboard.putNumber("Extension Encoder", m_crane.extenisonEncoder());
+    
+    SmartDashboard.putNumber("Target Arm Position", m_crane.desiredPosition);
+    SmartDashboard.putNumber("Left Joystick Y", o_controller.getLeftY());
 
   }
 
@@ -56,7 +59,9 @@ public class Robot extends TimedRobot {
 
     displaySmartDashboard();
     m_crane.craneRun();
+    System.out.println("Before Claw Run");
     m_claw.clawRun();
+    System.out.println("After Claw Run");
   }
 
   public void displaySmartDashboard() {
@@ -102,7 +107,7 @@ public class Robot extends TimedRobot {
     // the right by default.
     final var rot =
         -m_rotLimiter.calculate(MathUtil.applyDeadband(d_controller.getRawAxis(2), DriveConstants.deadBand))
-            * Drivetrain.kMaxAngularSpeed;
+            * Drivetrain.kMaxAngularSpeed * speedMultiplier;
 
     if (driving && (Math.abs(d_controller.getLeftX()) > DriveConstants.deadBand || Math.abs(d_controller.getLeftY()) > DriveConstants.deadBand || Math.abs(d_controller.getRawAxis(2)) > DriveConstants.deadBand)) {
       m_swerve.drive(xSpeed, ySpeed, rot, fieldRelative);

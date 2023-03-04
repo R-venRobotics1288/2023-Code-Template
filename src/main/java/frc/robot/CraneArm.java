@@ -19,7 +19,7 @@ public class CraneArm {
 
     public static final double kMaxSpeed = 3.0; // 3 meters per second
 
-    private double desiredPosition = 0;
+    public double desiredPosition = 0;
     private XboxController o_controller;
 
     private PIDController m_CraneUpPIDController = new PIDController(ArmConstants.craneUpP, 0, 0);
@@ -98,6 +98,7 @@ public class CraneArm {
         // }
         if (o_controller.getRawButton(9)) {
             desiredPosition = ArmConstants.driveLimit;
+            extensionPosition = "drive";
         }
 
         // Ground Position - A
@@ -129,11 +130,12 @@ public class CraneArm {
         if (desiredPosition < ArmConstants.armDownHardLimit) {
             desiredPosition = ArmConstants.armDownHardLimit;
         }
-        desiredPosition = ArmConstants.middlePosition;
+        // desiredPosition = ArmConstants.middlePosition;
         // m_extension.extendRun();
-        m_extension.buttonExtension(extensionPosition);
+        if (extensionPosition != null) {
+            m_extension.buttonExtension(extensionPosition);
+        }
         
-      
       
         double craneOutput = m_CraneUpPIDController.calculate(m_CraneEncoder.getPosition(), desiredPosition);
         if (craneOutput < 0) {

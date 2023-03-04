@@ -40,19 +40,19 @@ public class Constants {
 
         public static final int deadband = 3;
 
-        public static final double craneUpP = 0.01;
+        public static final double craneUpP = 0.006;
         public static final double craneDownP = 0.005;
         
         // TODO Change Limits
         // Neagtive extension, Postive retraction
-        public static final double extensionLimit = 9.0;
-        public static final double retractionLimit = -5.0;
+        public static final double extensionLimit = 300.0;
+        public static final double retractionLimit = 3.0;
 
         public static final double extensionP = 0.01;
 
-        public static final double extendGround = 8.7;
-        public static final double extendMiddle = -10.6191520690918;
-        public static final double extendHigh = 8.0;
+        public static final double extendGround = 43.95191192626953;
+        public static final double extendMiddle = 85.86058807373047;
+        public static final double extendHigh = 286.19281005859375;
         public static final double extendHuman = 9.0;
     }
 }
