@@ -1,7 +1,5 @@
 package frc.robot;
 
-import javax.print.attribute.standard.Destination;
-
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.revrobotics.RelativeEncoder;
