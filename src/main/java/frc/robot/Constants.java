@@ -44,8 +44,9 @@ public class Constants {
         public static final double craneDownP = 0.005;
         
         // TODO Change Limits
+        // Neagtive extension, Postive retraction
         public static final double extensionLimit = 9.0;
-        public static final double retractionLimit = 1.0;
+        public static final double retractionLimit = -5.0;
 
         public static final double extensionP = 0.01;
 

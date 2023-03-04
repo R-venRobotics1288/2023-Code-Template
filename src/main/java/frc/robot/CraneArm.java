@@ -141,34 +141,6 @@ public class CraneArm {
         }
         m_CraneMotor.set(craneOutput);
 
-        // For testing purposes
-        int delta = (int)m_CraneEncoder.getPosition() - (int)desiredPosition;
-        System.out.println("Encoder: " + m_CraneEncoder.getPosition());
-        System.out.println("desiredPosition: " + desiredPosition);
-        System.out.println("delta: " + delta);
-
-        // OLD CODE
-        // if (delta > ArmConstants.deadband) {
-        //     m_CraneMotor.set(-ArmConstants.speed);
-        //     System.out.println("Moving down");
-        // }  
-        // else if (delta < -ArmConstants.deadband) {
-        //     m_CraneMotor.set(ArmConstants.speed);
-        //     System.out.println("Moving up");
-        // }
-        // else if (delta >= -ArmConstants.deadband && delta <= ArmConstants.deadband) {
-        //     m_CraneMotor.set(0);
-        //     System.out.println("Stopped");
-        // }
-
-        // This will be implemented after we get the rotational crane motion working
-        // if (o_controller.getRawButton(5)) {
-        //     m_extendingMotor.set(ControlMode.Position,-1.0);
-        // }
-        // if (o_controller.getRawButton(7)) {
-        //     m_extendingMotor.set(ControlMode.Position,1.0);
-        // }
-
 
         /**
         * Encoder position is read from a RelativeEncoder object by calling the

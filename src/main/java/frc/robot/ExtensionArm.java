@@ -21,12 +21,14 @@ public class ExtensionArm {
 
     public ExtensionArm(XboxController o_controller) {
         this.o_controller = o_controller;
-        m_extendingMotor = new CANSparkMax(5, MotorType.kBrushless); // TODO Change ID
+        m_extendingMotor = new CANSparkMax(5, MotorType.kBrushless);
         m_extendEncoder = m_extendingMotor.getEncoder();
     }
 
 
     public void extendRun() {
+        // Neagtive extension, Postive retraction
+
         // Left Bumper - 5 - Arm Retraction
         if (o_controller.getRawButton(5)) {
             if (m_extendEncoder.getPosition() <= ArmConstants.retractionLimit) {
@@ -58,6 +60,7 @@ public class ExtensionArm {
     }
 
     public void buttonExtension(String position) {
+        // Neagtive extension, Postive retraction
         if (position.equals("ground")) {
             extensionDesiredPosition = ArmConstants.extendGround;
         } 
@@ -70,13 +73,10 @@ public class ExtensionArm {
         if (position.equals("high")) {
             extensionDesiredPosition = ArmConstants.extendHigh;
         }
-        if (extensionDesiredPosition > -5) {
-            extensionDesiredPosition = -5;
+        if (extensionDesiredPosition > ArmConstants.retractionLimit) {
+            extensionDesiredPosition = ArmConstants.retractionLimit;
         }
         final double extensionOutput = m_ExtensionPIDController.calculate(m_extendEncoder.getPosition(), extensionDesiredPosition);
         m_extendingMotor.set(extensionOutput);
-
-
-        
     }
 }
