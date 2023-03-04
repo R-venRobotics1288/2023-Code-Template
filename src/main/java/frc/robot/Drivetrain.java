@@ -105,9 +105,6 @@ public class Drivetrain {
     SmartDashboard.putNumber("Back Left Abs Encoder Postion", m_backLeft.getAbsoluteEncoderRad());
     SmartDashboard.putNumber("Back Right Abs Encoder Postion", m_backRight.getAbsoluteEncoderRad());
     SmartDashboard.putNumber("Gyro Yaw Value", getGyroValue());
-    SmartDashboard.putNumber("Odometry X", m_odometry.getEstimatedPosition().getX());
-    SmartDashboard.putNumber("Odometry X", m_odometry.getEstimatedPosition().getY());
-    SmartDashboard.putNumber("Odometry Rot", m_odometry.getEstimatedPosition().getRotation().getRadians());
   }
 
   public void robotInit() {
