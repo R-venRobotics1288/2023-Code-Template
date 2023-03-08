@@ -59,9 +59,7 @@ public class Robot extends TimedRobot {
 
     displaySmartDashboard();
     m_crane.craneRun();
-    System.out.println("Before Claw Run");
     m_claw.clawRun();
-    System.out.println("After Claw Run");
   }
 
   public void displaySmartDashboard() {
@@ -76,6 +74,8 @@ public class Robot extends TimedRobot {
     // negative values when we push forward.
     if (d_controller.getRightBumper()) {
       speedMultiplier = .333;
+    } else if (d_controller.getRawButton(8)) {
+      speedMultiplier = .2;
     } else {
       speedMultiplier = 1.0;
     }
@@ -112,6 +112,7 @@ public class Robot extends TimedRobot {
     if (driving && (Math.abs(d_controller.getLeftX()) > DriveConstants.deadBand || Math.abs(d_controller.getLeftY()) > DriveConstants.deadBand || Math.abs(d_controller.getRawAxis(2)) > DriveConstants.deadBand)) {
       m_swerve.drive(xSpeed, ySpeed, rot, fieldRelative);
     } else {
+      // m_swerve.drive(0,0,0,true);
       m_swerve.stop();
     }
    

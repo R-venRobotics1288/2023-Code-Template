@@ -26,17 +26,16 @@ public class Constants {
     }
     
     public static class ArmConstants {
-        public static final float downSoftLimit = 19.5f;
-        public static final float upSoftLimit = 60.5f;
  
-        public static final float armDownHardLimit = 5;
+        public static final double armUpHardLimit = 155;
+        public static final double armDownHardLimit = 5;
 
         // public static final double driveLimit = 16.6;
         public static final double driveLimit = 5.0;
         public static final double groundPosition = 25.690353393554688;
         public static final double middlePosition = 110.78571081161499;
-        public static final double highPosition = 125.78571081161499;
-        public static final double humanPosition = 120.78571081161499;
+        public static final double highPosition = 135.78571081161499;
+        public static final double humanPosition = 105;
 
         public static final int deadband = 3;
 

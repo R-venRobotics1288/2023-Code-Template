@@ -13,10 +13,10 @@ import frc.robot.Constants.ArmConstants;
 
 
 public class ExtensionArm {
-    private CANSparkMax m_extendingMotor;
+    public CANSparkMax m_extendingMotor;
     private RelativeEncoder m_extendEncoder;
     private XboxController o_controller;
-    private double extensionDesiredPosition;
+    public double extensionDesiredPosition;
 
     private PIDController m_ExtensionPIDController = new PIDController(ArmConstants.extensionP, 0 ,0);
 
@@ -32,7 +32,7 @@ public class ExtensionArm {
 
     public void extendRun() {
         // Neagtive extension, Postive retraction
-
+        
         // Left Bumper - 5 - Arm Retraction
         if (o_controller.getRawButton(5)) {
             if (m_extendEncoder.getPosition() <= ArmConstants.retractionLimit) {
@@ -63,7 +63,7 @@ public class ExtensionArm {
         return m_extendEncoder.getPosition();
     }
 
-    public void buttonExtension(String position) {
+    public void buttonExtension(String position, boolean manual) {
         // Neagtive extension, Postive retraction
         if (position.equals("ground")) {
             extensionDesiredPosition = ArmConstants.extendGround;
@@ -87,6 +87,10 @@ public class ExtensionArm {
             extensionDesiredPosition = ArmConstants.extensionLimit;
         }
         final double extensionOutput = m_ExtensionPIDController.calculate(m_extendEncoder.getPosition(), extensionDesiredPosition);
-        m_extendingMotor.set(extensionOutput);
+        if (!manual) {
+            m_extendingMotor.set(extensionOutput);
+        }
+        
     }
+
 }

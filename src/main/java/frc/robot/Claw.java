@@ -18,14 +18,11 @@ public class Claw {
     public void clawRun() {
         // * Intake - SUBJECT TO CHANGE
         if (o_controller.getRawButton(8)) {
-            System.out.println("Intake");
-            clawMotor.set(.5);
+            clawMotor.set(.3);
             // * Outtake - SUBJECT TO CHANGE
         } else if (o_controller.getRawButton(6)) {
-            System.out.println("Outtake");
-            clawMotor.set(-.15); //TODO Fix claw speeds
+            clawMotor.set(-.85); //TODO Fix claw speeds
         } else {
-            System.out.println("Stop");
             clawMotor.set(0);
         }
     }

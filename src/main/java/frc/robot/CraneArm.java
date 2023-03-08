@@ -24,6 +24,9 @@ public class CraneArm {
 
     private PIDController m_CraneUpPIDController = new PIDController(ArmConstants.craneUpP, 0, 0);
     private PIDController m_CraneDownPIDController = new PIDController(ArmConstants.craneDownP, 0, 0);
+
+    private boolean manualExtension = false;
+    private boolean manualArm = false;
     
     public CraneArm(XboxController o_controller) {
         this.o_controller = o_controller;
@@ -92,15 +95,41 @@ public class CraneArm {
 
     
     public void craneRun() {
-        // set the motor output based on jostick position
-        // if (o_controller.getLeftY() != deadZone) {
-        //     m_CraneMotor.set(o_controller.getLeftY());
-        // }
+        if (m_CraneEncoder.getPosition() > ArmConstants.armDownHardLimit && o_controller.getLeftY() > 0.3) {
+            // Move down if you are within the limit and dedband
+            System.out.println("Going down");
+            manualArm = true;
+            m_CraneMotor.set(-.1);
+        } else if (m_CraneEncoder.getPosition() < ArmConstants.armUpHardLimit && o_controller.getLeftY() < -0.3) {
+            // Move up if you are within the limit and dedband
+            System.out.println("Going up");
+            manualArm = true;
+            m_CraneMotor.set(.1);
+        } else if (manualArm) {
+            System.out.println("MANUAL ENDING");
+            manualArm = false;
+            desiredPosition = m_CraneEncoder.getPosition();
+        }
+
+        if (m_extension.extenisonEncoder() < ArmConstants.extensionLimit && o_controller.getRawButton(7)) {
+            System.out.println("Extending");
+            manualExtension = true;
+            m_extension.m_extendingMotor.set(.1);
+        } else if (m_extension.extenisonEncoder() > ArmConstants.retractionLimit && o_controller.getRawButton(5)) {
+            System.out.println("Retracting");
+            manualExtension = true;
+            m_extension.m_extendingMotor.set(-.1);
+        } else if (manualExtension) {
+            System.out.println("MANUAL ENDING");
+            manualExtension = false;
+            m_extension.extensionDesiredPosition = m_extension.extenisonEncoder();
+            extensionPosition = "manual";
+        }
+
         if (o_controller.getRawButton(9)) {
             desiredPosition = ArmConstants.driveLimit;
             extensionPosition = "drive";
         }
-
         // Ground Position - A
         if (o_controller.getRawButton(2)) {
             desiredPosition = ArmConstants.groundPosition;
@@ -121,19 +150,12 @@ public class CraneArm {
             desiredPosition = ArmConstants.highPosition;
             extensionPosition = "high";
         }
-        // if (o_controller.getLeftX() > 0.3) {
-        //     desiredPosition += .5;
-        // }
-        // if (o_controller.getLeftX() < .3) {
-        //     desiredPosition -= .5;
-        // }
-        if (desiredPosition < ArmConstants.armDownHardLimit) {
-            desiredPosition = ArmConstants.armDownHardLimit;
-        }
+   
+     
         // desiredPosition = ArmConstants.middlePosition;
         // m_extension.extendRun();
         if (extensionPosition != null) {
-            m_extension.buttonExtension(extensionPosition);
+            m_extension.buttonExtension(extensionPosition, manualExtension);
         }
         
       
@@ -141,7 +163,11 @@ public class CraneArm {
         if (craneOutput < 0) {
             craneOutput = m_CraneDownPIDController.calculate(m_CraneEncoder.getPosition(), desiredPosition);
         }
-        m_CraneMotor.set(craneOutput);
+        System.out.println("Desired position: " + desiredPosition);
+        System.out.println("Crane output: " + craneOutput);
+        if (!manualArm) {
+            m_CraneMotor.set(craneOutput);
+        }
 
 
         /**
