@@ -6,27 +6,33 @@ import com.revrobotics.RelativeEncoder;
 
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.math.controller.PIDController;
+import com.revrobotics.CANSparkMax.IdleMode;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 import frc.robot.Constants.ArmConstants;
 
 
 public class ExtensionArm {
-    private CANSparkMax m_extendingMotor;
+    public CANSparkMax m_extendingMotor;
     private RelativeEncoder m_extendEncoder;
     private XboxController o_controller;
-    private double extensionDesiredPosition = -5;
+    public double extensionDesiredPosition;
 
     private PIDController m_ExtensionPIDController = new PIDController(ArmConstants.extensionP, 0 ,0);
 
     public ExtensionArm(XboxController o_controller) {
         this.o_controller = o_controller;
-        m_extendingMotor = new CANSparkMax(5, MotorType.kBrushless); // TODO Change ID
+        m_extendingMotor = new CANSparkMax(5, MotorType.kBrushless);
+        m_extendingMotor.setIdleMode(IdleMode.kCoast);
+        m_extendingMotor.burnFlash();
         m_extendEncoder = m_extendingMotor.getEncoder();
+        extensionDesiredPosition = 0;
     }
 
 
     public void extendRun() {
+        // Neagtive extension, Postive retraction
+        
         // Left Bumper - 5 - Arm Retraction
         if (o_controller.getRawButton(5)) {
             if (m_extendEncoder.getPosition() <= ArmConstants.retractionLimit) {
@@ -57,7 +63,8 @@ public class ExtensionArm {
         return m_extendEncoder.getPosition();
     }
 
-    public void buttonExtension(String position) {
+    public void buttonExtension(String position, boolean manual) {
+        // Neagtive extension, Postive retraction
         if (position.equals("ground")) {
             extensionDesiredPosition = ArmConstants.extendGround;
         } 
@@ -70,13 +77,20 @@ public class ExtensionArm {
         if (position.equals("high")) {
             extensionDesiredPosition = ArmConstants.extendHigh;
         }
-        if (extensionDesiredPosition > -5) {
-            extensionDesiredPosition = -5;
+        if (position.equals("drive")) {
+            extensionDesiredPosition = ArmConstants.retractionLimit;
+        }
+        if (extensionDesiredPosition < ArmConstants.retractionLimit) {
+            extensionDesiredPosition = ArmConstants.retractionLimit;
+        }
+        if (extensionDesiredPosition > ArmConstants.extensionLimit) {
+            extensionDesiredPosition = ArmConstants.extensionLimit;
         }
         final double extensionOutput = m_ExtensionPIDController.calculate(m_extendEncoder.getPosition(), extensionDesiredPosition);
-        m_extendingMotor.set(extensionOutput);
-
-
+        if (!manual) {
+            m_extendingMotor.set(extensionOutput);
+        }
         
     }
+
 }

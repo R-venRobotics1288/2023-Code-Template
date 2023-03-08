@@ -12,6 +12,7 @@ import com.ctre.phoenix.sensors.SensorTimeBase;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.revrobotics.RelativeEncoder;
+import com.revrobotics.CANSparkMax.IdleMode;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
@@ -70,8 +71,10 @@ public class SwerveModule {
       double offset) {
     m_driveMotor = new CANSparkMax(driveMotorChannel, MotorType.kBrushless);
     m_turningMotor = new CANSparkMax(turningMotorChannel, MotorType.kBrushless);
+    m_driveMotor.setIdleMode(IdleMode.kBrake);
     m_turningMotor.setInverted(false);
     m_turningMotor.burnFlash();
+    m_driveMotor.burnFlash();
 
     m_driveEncoder = m_driveMotor.getEncoder();
     m_driveEncoder.setPosition(0);
@@ -132,10 +135,9 @@ public class SwerveModule {
    */
   public void setDesiredState(SwerveModuleState desiredState) {
     // Optimize the reference state to avoid spinning further than 90 degrees
-    System.out.println("Before Optimize: " + getAbsoluteEncoderRad());
     desiredState.angle = desiredState.angle.plus(new Rotation2d(absoluteEncoderOffset));
     final SwerveModuleState state = SwerveModuleState.optimize(desiredState, new Rotation2d(getAbsoluteEncoderRad()));
-    System.out.println("After Optimize: " + state);
+   
 
     // Calculate the drive output from the drive PID controller.
     final double driveOutput = m_drivePIDController.calculate(m_driveEncoder.getVelocity(), state.speedMetersPerSecond);

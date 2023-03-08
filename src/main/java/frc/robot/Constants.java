@@ -26,32 +26,32 @@ public class Constants {
     }
     
     public static class ArmConstants {
-        public static final float downSoftLimit = 19.5f;
-        public static final float upSoftLimit = 60.5f;
  
-        public static final float armDownHardLimit = 5;
+        public static final double armUpHardLimit = 155;
+        public static final double armDownHardLimit = 5;
 
         // public static final double driveLimit = 16.6;
         public static final double driveLimit = 5.0;
         public static final double groundPosition = 25.690353393554688;
         public static final double middlePosition = 110.78571081161499;
-        public static final double highPosition = 125.78571081161499;
-        public static final double humanPosition = 120.78571081161499;
+        public static final double highPosition = 135.78571081161499;
+        public static final double humanPosition = 105;
 
         public static final int deadband = 3;
 
-        public static final double craneUpP = 0.01;
+        public static final double craneUpP = 0.006;
         public static final double craneDownP = 0.005;
         
         // TODO Change Limits
-        public static final double extensionLimit = 9.0;
-        public static final double retractionLimit = 1.0;
+        // Neagtive extension, Postive retraction
+        public static final double extensionLimit = 300.0;
+        public static final double retractionLimit = 3.0;
 
         public static final double extensionP = 0.01;
 
-        public static final double extendGround = 8.7;
-        public static final double extendMiddle = -10.6191520690918;
-        public static final double extendHigh = 8.0;
+        public static final double extendGround = 43.95191192626953;
+        public static final double extendMiddle = 85.86058807373047;
+        public static final double extendHigh = 286.19281005859375;
         public static final double extendHuman = 9.0;
     }
 }
