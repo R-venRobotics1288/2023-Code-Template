@@ -26,6 +26,15 @@ public class Constants {
 
         public static final double speedRateLimit = 1.0;
         public static final double rotRateLimit = 3;
+
+        // Up double list for x and y speeds
+        public static final double[] upJoytickInputs = {0.0, -1.0};
+        // Left double list for x and y speeds
+        public static final double[] leftJoytickInputs = {-1.0, 0};
+        // Right double list for x and y speeds
+        public static final double[] rightJoytickInputs = {1.0, 0.0};
+        // Down double list for x and y speeds
+        public static final double[] downJoytickInputs = {0.0, 1.0};
     }
     
     public static class ArmConstants {
@@ -42,8 +51,8 @@ public class Constants {
 
         public static final int deadband = 3;
 
-        public static final double craneUpP = 0.006;
-        public static final double craneDownP = 0.005;
+        public static final double craneUpP = 0.015;
+        public static final double craneDownP = 0.008;
         
         // TODO Change Limits
         // Neagtive extension, Postive retraction

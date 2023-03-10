@@ -98,30 +98,24 @@ public class CraneArm {
     public void craneRun() {
         if (m_CraneEncoder.getPosition() > ArmConstants.armDownHardLimit && o_controller.getLeftY() > 0.3) {
             // Move down if you are within the limit and dedband
-            System.out.println("Going down");
             manualArm = true;
             m_CraneMotor.set(-.1);
         } else if (m_CraneEncoder.getPosition() < ArmConstants.armUpHardLimit && o_controller.getLeftY() < -0.3) {
             // Move up if you are within the limit and dedband
-            System.out.println("Going up");
             manualArm = true;
             m_CraneMotor.set(.1);
         } else if (manualArm) {
-            System.out.println("MANUAL ENDING");
             manualArm = false;
             desiredPosition = m_CraneEncoder.getPosition();
         }
 
         if (m_extension.extenisonEncoder() < ArmConstants.extensionLimit && o_controller.getRawButton(7)) {
-            System.out.println("Extending");
             manualExtension = true;
-            m_extension.m_extendingMotor.set(.5);
+            m_extension.m_extendingMotor.set(.8);
         } else if (m_extension.extenisonEncoder() > ArmConstants.retractionLimit && o_controller.getRawButton(5)) {
-            System.out.println("Retracting");
             manualExtension = true;
-            m_extension.m_extendingMotor.set(-.5);
+            m_extension.m_extendingMotor.set(-.8);
         } else if (manualExtension) {
-            System.out.println("MANUAL ENDING");
             manualExtension = false;
             m_extension.extensionDesiredPosition = m_extension.extenisonEncoder();
             extensionPosition = "manual";
@@ -164,8 +158,6 @@ public class CraneArm {
         if (craneOutput < 0) {
             craneOutput = m_CraneDownPIDController.calculate(m_CraneEncoder.getPosition(), desiredPosition);
         }
-        System.out.println("Desired position: " + desiredPosition);
-        System.out.println("Crane output: " + craneOutput);
         if (!manualArm) {
             m_CraneMotor.set(craneOutput);
         }
