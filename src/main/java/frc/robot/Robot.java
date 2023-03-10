@@ -22,17 +22,19 @@ public class Robot extends TimedRobot {
   private final CraneArm m_crane = new CraneArm(o_controller);
   private final Claw m_claw = new Claw(o_controller);
 
+  private final Auto auto = new Auto(m_claw, m_crane, m_swerve.m_gyro, m_swerve);
+
   // Slew rate limiters to make joystick inputs more gentle; 1/3 sec from 0 to 1.
-  private final SlewRateLimiter m_xspeedLimiter = new SlewRateLimiter(1.5);
-  private final SlewRateLimiter m_yspeedLimiter = new SlewRateLimiter(1.5);
-  private final SlewRateLimiter m_rotLimiter = new SlewRateLimiter(3);
+  private final SlewRateLimiter m_xspeedLimiter = new SlewRateLimiter(DriveConstants.speedRateLimit);
+  private final SlewRateLimiter m_yspeedLimiter = new SlewRateLimiter(DriveConstants.speedRateLimit);
+  private final SlewRateLimiter m_rotLimiter = new SlewRateLimiter(DriveConstants.rotRateLimit);
   private boolean driving = true;
   private double speedMultiplier = 1.0; // For speed control via button press
   // private final Pneumatics m_pneumatics = new Pneumatics();
 
   @Override
   public void autonomousPeriodic() {
-    driveWithJoystick(true);
+    // auto.plan1();
     // m_swerve.updateOdometry();
   }
 
@@ -55,7 +57,11 @@ public class Robot extends TimedRobot {
 
   @Override
   public void teleopPeriodic() {
-    driveWithJoystick(true);
+    if (d_controller.getRawButton(1)) {
+      driveWithJoystick(false);
+    } else {
+      driveWithJoystick(true);
+    }
 
     displaySmartDashboard();
     m_crane.craneRun();
@@ -109,7 +115,7 @@ public class Robot extends TimedRobot {
         -m_rotLimiter.calculate(MathUtil.applyDeadband(d_controller.getRawAxis(2), DriveConstants.deadBand))
             * Drivetrain.kMaxAngularSpeed * speedMultiplier;
 
-    if (driving && (Math.abs(d_controller.getLeftX()) > DriveConstants.deadBand || Math.abs(d_controller.getLeftY()) > DriveConstants.deadBand || Math.abs(d_controller.getRawAxis(2)) > DriveConstants.deadBand)) {
+    if (driving && (Math.abs(xSpeed) > .05 || Math.abs(ySpeed) > .1 || Math.abs(rot) > .05)) {
       m_swerve.drive(xSpeed, ySpeed, rot, fieldRelative);
     } else {
       // m_swerve.drive(0,0,0,true);

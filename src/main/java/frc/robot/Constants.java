@@ -17,22 +17,25 @@ public class Constants {
         public static final double turningP = 0.6;
         public static final double drivingP = 0.25;
 
-        public static final double deadBand = 0.15;
+        public static final double deadBand = 0.1;
 
         public static final double neoTurningGearRatio = 12.8;
         public static final double neoTurningResoultion = 42.0;
 
         public static final double radiansPerEncoderRev = (2 * Math.PI) / neoTurningGearRatio;
+
+        public static final double speedRateLimit = 1.0;
+        public static final double rotRateLimit = 3;
     }
     
     public static class ArmConstants {
  
         public static final double armUpHardLimit = 155;
-        public static final double armDownHardLimit = 5;
+        public static final double armDownHardLimit = 1;
 
         // public static final double driveLimit = 16.6;
-        public static final double driveLimit = 5.0;
-        public static final double groundPosition = 25.690353393554688;
+        public static final double driveLimit = 1.0;
+        public static final double groundPosition = 30.690353393554688;
         public static final double middlePosition = 110.78571081161499;
         public static final double highPosition = 135.78571081161499;
         public static final double humanPosition = 105;
@@ -44,14 +47,14 @@ public class Constants {
         
         // TODO Change Limits
         // Neagtive extension, Postive retraction
-        public static final double extensionLimit = 300.0;
+        public static final double extensionLimit = 370.0;
         public static final double retractionLimit = 3.0;
 
         public static final double extensionP = 0.01;
 
-        public static final double extendGround = 43.95191192626953;
+        public static final double extendGround = 60.95191192626953;
         public static final double extendMiddle = 85.86058807373047;
-        public static final double extendHigh = 286.19281005859375;
+        public static final double extendHigh = 365.19281005859375;
         public static final double extendHuman = 9.0;
     }
 }
