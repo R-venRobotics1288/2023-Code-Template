@@ -42,7 +42,7 @@ public class Robot extends TimedRobot {
 
   @Override
   public void robotInit() {
-    // CameraServer.startAutomaticCapture();
+    CameraServer.startAutomaticCapture();
   }
 
   @Override
@@ -59,6 +59,8 @@ public class Robot extends TimedRobot {
 
     SmartDashboard.putNumber("Target Arm Position", m_crane.desiredPosition);
     // SmartDashboard.putNumber("Left Joystick Y", o_controller.getLeftY());
+    
+    SmartDashboard.putNumber("Gyro Pitch", m_swerve.m_gyro.getPitch());
 
   }
 
@@ -149,7 +151,7 @@ public class Robot extends TimedRobot {
     
 
     if (driving && (Math.abs(xSpeed) > .05 || Math.abs(ySpeed) > .1 || Math.abs(rot) > .05)) {
-      m_swerve.drive(xSpeed, ySpeed, rot, fieldRelative);
+      m_swerve.drive(xSpeed, ySpeed, rot, fieldRelative, true);
     } else {
       // m_swerve.drive(0,0,0,true);
       m_swerve.stop();

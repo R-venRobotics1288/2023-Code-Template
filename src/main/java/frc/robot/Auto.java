@@ -19,10 +19,13 @@ public class Auto {
     private final SlewRateLimiter m_xspeedLimiter = new SlewRateLimiter(DriveConstants.speedRateLimit);
     private final SlewRateLimiter m_yspeedLimiter = new SlewRateLimiter(DriveConstants.speedRateLimit);
 
+    private boolean isDrivingToChargeStation = true;
     private boolean isGoingUpChargeStation = false;
     private boolean isOnChargeStation = false;
     private boolean isGoingDownChargeStation = false;
     private boolean isOverChargeStation = false;
+
+    private boolean isBackOnChargeStation = false;
 
     public Auto(Claw claw, CraneArm crane, PigeonIMU gyro, Drivetrain swerve) {
         this.m_gyro = gyro;
@@ -51,15 +54,18 @@ public class Auto {
     /**
      * Place object then move robot to middle
      */
-    public double plan2() {
-        // Left Or Right placement of the robot
+    // public void plan2() {
+    //     // Left Or Right placement of the robot
+    //     if (!isOverChargeStation) {
+    //         exitCommunityOverChargeStation();
+    //     } else {
+    //         dockAndEngage();
+    //     }
+    //     // Place a cone
 
-        // Place a cone
-        placeCone();
-        // Drive Backwards
+    //     // Drive Backwards
 
-        return 1.0;
-    }
+    // }
 
     /**
      * Places the cone on the grid.
@@ -69,7 +75,7 @@ public class Auto {
         if (!craneArmUp1) {
             if (m_crane.getCraneOutput()[0] > .05 && m_crane.getCraneOutput()[1] > .05) {
                 m_crane.autoCraneRun(ArmConstants.highPosition, "high");
-                
+
             } else {
                 craneArmUp1 = true;
                 timer.start();
@@ -104,11 +110,10 @@ public class Auto {
             if (timer.get() < 1.5) {
                 m_claw.autoClawRun("out");
                 System.out.println("Claw Running");
-            } 
-            else if (!timer.hasElapsed(6)) {
+            } else if (!timer.hasElapsed(5)) {
                 m_claw.autoClawRun("stop"); // Stop claw
                 m_crane.autoCraneRun(0, "drive");
-                driveInDirection("right");
+                driveInDirection("right", .5, true);
                 System.out.println("Drive back");
             } else {
                 m_swerve.stop();
@@ -121,20 +126,53 @@ public class Auto {
      * Drives the robot forward until the gyro goes positive, then negative, then
      * levels out.
      */
-    private void exitCommunityOverChargeStation() {
-        // TODO Figure out how to keep track of where in the process the robot is
-    }
+    // private void exitCommunityOverChargeStation() {
+    //     // TODO Figure out how to keep track of wher in the process the robot is
+    //     if (isDrivingToChargeStation) {
+    //         driveInDirection("right", .3, true);
+    //         if (m_gyro.getPitch() > 30) {
+    //             isDrivingToChargeStation = false;
+    //             isGoingUpChargeStation = true;
+    //         }
+    //     } else if (isGoingUpChargeStation) {
+    //         driveInDirection("right", .3, true );
+    //         if (m_gyro.getPitch() < -30) {
+    //             isGoingUpChargeStation = false;
+    //             isGoingDownChargeStation = true;
+    //         }
+    //     } else if (isGoingDownChargeStation) {
+    //         driveInDirection("right", .3, true);
+    //         if (m_gyro.getPitch() > -5 && m_gyro.getPitch() < 5) {
+    //             isGoingDownChargeStation = false;
+    //             isOverChargeStation = true;
+    //         }
+    //     }
+    // }
 
     /**
      * This runs a function that will move the robot forward if the gyro is positi
      */
     private void dockAndEngage() {
+        if (!isBackOnChargeStation) {
+            driveInDirection("left", .1, true);
+            if (m_gyro.getYaw() < -30) {
+                isBackOnChargeStation = true;
+            }
+        }
+        // Balance
+        if (m_gyro.getPitch() > 20) {
+            driveInDirection("left", .1, true);
+        } else if (m_gyro.getYaw() < -20) {
+            driveInDirection("right", .1, true);
+        } else {
+            m_swerve.stop();
+        }
         // If the gyro is positive, move forward
         // If the gyro is negative, move backwards
         // If the gyro is level, stop moving
     }
 
-    public void driveInDirection(String direction) {
+    public void driveInDirection(String direction, double speedModifier, boolean moveDriveWheels) {
         double xSpeedVal = 0.0;
         double ySpeedVal = 0.0;
         if (direction.equalsIgnoreCase("up")) {
@@ -151,10 +189,10 @@ public class Auto {
             ySpeedVal = DriveConstants.rightJoytickInputs[1];
         }
 
-        double xSpeed = -m_xspeedLimiter.calculate(xSpeedVal) * Drivetrain.kMaxSpeed * .3;
-        double ySpeed = -m_yspeedLimiter.calculate(ySpeedVal) * Drivetrain.kMaxSpeed * .3;
+        double xSpeed = -m_xspeedLimiter.calculate(xSpeedVal) * Drivetrain.kMaxSpeed * speedModifier;
+        double ySpeed = -m_yspeedLimiter.calculate(ySpeedVal) * Drivetrain.kMaxSpeed * speedModifier;
 
-        m_swerve.drive(xSpeed, ySpeed, 0, true);
+        m_swerve.drive(xSpeed, ySpeed, 0, true, moveDriveWheels);
     }
 
 }

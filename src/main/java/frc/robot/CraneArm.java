@@ -23,8 +23,9 @@ public class CraneArm {
     public double desiredPosition = 0;
     private XboxController o_controller;
 
-    private PIDController m_CraneUpPIDController = new PIDController(ArmConstants.craneUpP, 0, 0);
+    private PIDController m_CraneUpHighPIDController = new PIDController(ArmConstants.craneUpMidHighP, 0, 0);
     private PIDController m_CraneDownPIDController = new PIDController(ArmConstants.craneDownP, 0, 0);
+    private PIDController m_CraneUpGroundPIDController = new PIDController(ArmConstants.craneUpGroundP, 0, 0);
 
     private boolean manualExtension = false;
     private boolean manualArm = false;
@@ -154,9 +155,11 @@ public class CraneArm {
         }
         
       
-        craneOutput = m_CraneUpPIDController.calculate(m_CraneEncoder.getPosition(), desiredPosition);
+        craneOutput = m_CraneUpGroundPIDController.calculate(m_CraneEncoder.getPosition(), desiredPosition);
         if (craneOutput < 0) {
             craneOutput = m_CraneDownPIDController.calculate(m_CraneEncoder.getPosition(), desiredPosition);
+        } else if (desiredPosition == ArmConstants.highPosition || desiredPosition == ArmConstants.middlePosition) {
+            craneOutput = m_CraneUpHighPIDController.calculate(m_CraneEncoder.getPosition(), desiredPosition);
         }
         if (!manualArm) {
             m_CraneMotor.set(craneOutput);
@@ -183,7 +186,7 @@ public class CraneArm {
 
     public void autoCraneRun(double craneTarget, String extensionTarget) {
         // Runs the crane arm with targeted positions as paremeters
-        craneOutput = m_CraneUpPIDController.calculate(m_CraneEncoder.getPosition(), craneTarget);
+        craneOutput = m_CraneUpGroundPIDController.calculate(m_CraneEncoder.getPosition(), craneTarget);
         if (craneOutput < 0) {
             craneOutput = m_CraneDownPIDController.calculate(m_CraneEncoder.getPosition(), craneTarget);
         }

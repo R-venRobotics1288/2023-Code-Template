@@ -10,7 +10,7 @@ public class Constants {
         public static final double[] startingPositions = {
             -0.349746912717819 + Math.PI, 
             -3.060285486280918, 
-            2.66912117600441, 
+            0.776192709803581 + Math.PI,
             -2.439024522900581
         };
 
@@ -51,8 +51,9 @@ public class Constants {
 
         public static final int deadband = 3;
 
-        public static final double craneUpP = 0.015;
-        public static final double craneDownP = 0.008;
+        public static final double craneUpGroundP = 0.015;
+        public static final double craneUpMidHighP = 0.01;
+        public static final double craneDownP = 0.005;
         
         // TODO Change Limits
         // Neagtive extension, Postive retraction

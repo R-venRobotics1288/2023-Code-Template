@@ -91,17 +91,17 @@ public class Drivetrain {
    * @param rot Angular rate of the robot.
    * @param fieldRelative Whether the provided x and y speeds are relative to the field.
    */
-  public void drive(double xSpeed, double ySpeed, double rot, boolean fieldRelative) {
+  public void drive(double xSpeed, double ySpeed, double rot, boolean fieldRelative, boolean moveDriveWheels) {
     final SwerveModuleState[] swerveModuleStates =
         m_kinematics.toSwerveModuleStates(
             fieldRelative
                 ? ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, rot, new Rotation2d(getGyroValue()))
                 : new ChassisSpeeds(xSpeed, ySpeed, rot));
     SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleStates, kMaxSpeed);
-    m_frontLeft.setDesiredState(swerveModuleStates[0]);
-    m_frontRight.setDesiredState(swerveModuleStates[1]);
-    m_backLeft.setDesiredState(swerveModuleStates[2]);
-    m_backRight.setDesiredState(swerveModuleStates[3]);
+    m_frontLeft.setDesiredState(swerveModuleStates[0], moveDriveWheels);
+    m_frontRight.setDesiredState(swerveModuleStates[1], moveDriveWheels);
+    m_backLeft.setDesiredState(swerveModuleStates[2], moveDriveWheels);
+    m_backRight.setDesiredState(swerveModuleStates[3], moveDriveWheels);
   }
 
   /** Updates the field relative position of the robot. */
@@ -122,12 +122,5 @@ public class Drivetrain {
     m_frontRight.stop();
     m_backLeft.stop();
     m_backRight.stop();
-  }
-
-  public void setWheelsToOffset() {
-    m_frontLeft.setStateToOffset();
-    m_frontRight.setStateToOffset();
-    m_backLeft.setStateToOffset();
-    m_backRight.setStateToOffset();
   }
 }
