@@ -16,14 +16,16 @@ public class CraneArm {
     private RelativeEncoder m_CraneEncoder;
     private ExtensionArm m_extension;
     private String extensionPosition;
+    public double craneOutput;
 
     public static final double kMaxSpeed = 3.0; // 3 meters per second
 
     public double desiredPosition = 0;
     private XboxController o_controller;
 
-    private PIDController m_CraneUpPIDController = new PIDController(ArmConstants.craneUpP, 0, 0);
+    private PIDController m_CraneUpHighPIDController = new PIDController(ArmConstants.craneUpMidHighP, 0, 0);
     private PIDController m_CraneDownPIDController = new PIDController(ArmConstants.craneDownP, 0, 0);
+    private PIDController m_CraneUpGroundPIDController = new PIDController(ArmConstants.craneUpGroundP, 0, 0);
 
     private boolean manualExtension = false;
     private boolean manualArm = false;
@@ -32,7 +34,7 @@ public class CraneArm {
         this.o_controller = o_controller;
         m_extension = new ExtensionArm(o_controller);
 
-        
+        craneOutput = 0;
 
         // initialize SPARK MAX
         m_CraneMotor = new CANSparkMax(deviceID, MotorType.kBrushless);
@@ -97,30 +99,24 @@ public class CraneArm {
     public void craneRun() {
         if (m_CraneEncoder.getPosition() > ArmConstants.armDownHardLimit && o_controller.getLeftY() > 0.3) {
             // Move down if you are within the limit and dedband
-            System.out.println("Going down");
             manualArm = true;
             m_CraneMotor.set(-.1);
         } else if (m_CraneEncoder.getPosition() < ArmConstants.armUpHardLimit && o_controller.getLeftY() < -0.3) {
             // Move up if you are within the limit and dedband
-            System.out.println("Going up");
             manualArm = true;
             m_CraneMotor.set(.1);
         } else if (manualArm) {
-            System.out.println("MANUAL ENDING");
             manualArm = false;
             desiredPosition = m_CraneEncoder.getPosition();
         }
 
         if (m_extension.extenisonEncoder() < ArmConstants.extensionLimit && o_controller.getRawButton(7)) {
-            System.out.println("Extending");
             manualExtension = true;
-            m_extension.m_extendingMotor.set(.1);
+            m_extension.m_extendingMotor.set(.8);
         } else if (m_extension.extenisonEncoder() > ArmConstants.retractionLimit && o_controller.getRawButton(5)) {
-            System.out.println("Retracting");
             manualExtension = true;
-            m_extension.m_extendingMotor.set(-.1);
+            m_extension.m_extendingMotor.set(-.8);
         } else if (manualExtension) {
-            System.out.println("MANUAL ENDING");
             manualExtension = false;
             m_extension.extensionDesiredPosition = m_extension.extenisonEncoder();
             extensionPosition = "manual";
@@ -159,12 +155,12 @@ public class CraneArm {
         }
         
       
-        double craneOutput = m_CraneUpPIDController.calculate(m_CraneEncoder.getPosition(), desiredPosition);
+        craneOutput = m_CraneUpGroundPIDController.calculate(m_CraneEncoder.getPosition(), desiredPosition);
         if (craneOutput < 0) {
             craneOutput = m_CraneDownPIDController.calculate(m_CraneEncoder.getPosition(), desiredPosition);
+        } else if (desiredPosition == ArmConstants.highPosition || desiredPosition == ArmConstants.middlePosition) {
+            craneOutput = m_CraneUpHighPIDController.calculate(m_CraneEncoder.getPosition(), desiredPosition);
         }
-        System.out.println("Desired position: " + desiredPosition);
-        System.out.println("Crane output: " + craneOutput);
         if (!manualArm) {
             m_CraneMotor.set(craneOutput);
         }
@@ -186,6 +182,21 @@ public class CraneArm {
         * GetVelocity() returns the velocity of the encoder in units of RPM
         */
         SmartDashboard.putNumber("Encoder Velocity", m_CraneEncoder.getVelocity());
+    }
+
+    public void autoCraneRun(double craneTarget, String extensionTarget) {
+        // Runs the crane arm with targeted positions as paremeters
+        craneOutput = m_CraneUpGroundPIDController.calculate(m_CraneEncoder.getPosition(), craneTarget);
+        if (craneOutput < 0) {
+            craneOutput = m_CraneDownPIDController.calculate(m_CraneEncoder.getPosition(), craneTarget);
+        }
+        m_CraneMotor.set(craneOutput);
+        m_extension.buttonExtension(extensionTarget, false);
+    }
+
+    public double[] getCraneOutput() {
+        double[] output = {craneOutput, m_extension.getExtensionOutput()};
+        return output;
     }
     /** SmartDashboard.putNumber("Voltage", m_motor.getBusVoltage());
     use if we have brown outs and need to know the voltage */

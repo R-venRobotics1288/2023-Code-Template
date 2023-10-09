@@ -133,7 +133,7 @@ public class SwerveModule {
    *
    * @param desiredState Desired state with speed and angle.
    */
-  public void setDesiredState(SwerveModuleState desiredState) {
+  public void setDesiredState(SwerveModuleState desiredState, boolean moveDriveWheels) {
     // Optimize the reference state to avoid spinning further than 90 degrees
     desiredState.angle = desiredState.angle.plus(new Rotation2d(absoluteEncoderOffset));
     final SwerveModuleState state = SwerveModuleState.optimize(desiredState, new Rotation2d(getAbsoluteEncoderRad()));
@@ -152,13 +152,12 @@ public class SwerveModule {
     // final double turnFeedforward = m_turnFeedforward.calculate(m_turningPIDController.getSetpoint());
 
     // m_driveMotor.setVoltage((driveOutput + driveFeedforward));
-    m_driveMotor.set(driveOutput + driveFeedforward);
+    if (moveDriveWheels) {
+      m_driveMotor.set(driveOutput + driveFeedforward / 3);
+    } else {
+      m_driveMotor.set(0);
+    }
     m_turningMotor.set(turnOutput / 3);
-  }
-
-  public void setStateToOffset() {
-    // Testing purposes only. Sets the desired state to the offset value
-    setDesiredState(new SwerveModuleState(0, new Rotation2d(0)));
   }
 
   public void stop() {

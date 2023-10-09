@@ -16,12 +16,22 @@ public class Claw {
     }
 
     public void clawRun() {
-        // * Intake - SUBJECT TO CHANGE
         if (o_controller.getRawButton(8)) {
-            clawMotor.set(.3);
-            // * Outtake - SUBJECT TO CHANGE
+            // Outtake
+            clawMotor.set(.6);
         } else if (o_controller.getRawButton(6)) {
-            clawMotor.set(-.85); //TODO Fix claw speeds
+            // Intake
+            clawMotor.set(-.85);
+        } else {
+            clawMotor.set(0);
+        }
+    }
+
+    public void autoClawRun(String direction) {
+        if (direction.equalsIgnoreCase("out")) {
+            clawMotor.set(.6);
+        } else if (direction.equalsIgnoreCase("in")) {
+            clawMotor.set(-.85); 
         } else {
             clawMotor.set(0);
         }
